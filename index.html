@@ -9,30 +9,22 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #0a0a14;
-      --surface: rgba(255,255,255,0.03);
-      --border:  rgba(255,255,255,0.08);
-      --accent:  #50dcA0;
-      --accent2: #30c080;
-      --text:    #e8e8f0;
-      --muted:   #666680;
-      --dim:     #333350;
+      --bg:      #faf7f5;
+      --surface: #ffffff;
+      --border:  #e8e0dc;
+      --accent:  #b07da0;
+      --accent2: #9a6b8c;
+      --text:    #4a3f4a;
+      --muted:   #9a8f9a;
+      --dim:     #c4b8c4;
     }
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #0a0a14 0%, #0d0d1f 50%, #080810 100%);
+      background: linear-gradient(135deg, #faf7f5 0%, #f3eef8 50%, #fdf5f0 100%);
       font-family: 'Courier New', monospace;
       color: var(--text);
       overflow-x: hidden;
-    }
-
-    /* grain overlay */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      opacity: 0.04; pointer-events: none; z-index: 100;
     }
 
     /* ambient glow */
@@ -40,7 +32,7 @@
       content: '';
       position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
       width: 600px; height: 300px; border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(80,220,160,0.06) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(176,125,160,0.08) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -55,8 +47,8 @@
     /* ── Header ── */
     .badge {
       display: inline-block;
-      background: rgba(80,220,160,0.08);
-      border: 1px solid rgba(80,220,160,0.2);
+      background: rgba(176,125,160,0.1);
+      border: 1px solid rgba(176,125,160,0.25);
       border-radius: 4px;
       padding: 4px 14px;
       font-size: 11px;
@@ -74,11 +66,11 @@
       margin-bottom: 4px;
     }
     h1.line1 {
-      background: linear-gradient(135deg, #fff 0%, #a0f0cc 100%);
+      background: linear-gradient(135deg, #5a4a5a 0%, #b07da0 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
     h1.line2 {
-      background: linear-gradient(135deg, #a0f0cc 0%, var(--accent) 100%);
+      background: linear-gradient(135deg, #b07da0 0%, #d4a0c0 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       margin-bottom: 12px;
     }
@@ -90,14 +82,14 @@
     /* ── Card ── */
     .card {
       background: var(--surface);
-      border: 1px solid rgba(80,220,160,0.15);
+      border: 1px solid rgba(176,125,160,0.2);
       border-radius: 12px;
       padding: 32px;
       margin-bottom: 32px;
-      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 12px rgba(176,125,160,0.06);
     }
     .card-label {
-      font-size: 11px; color: #8888aa;
+      font-size: 11px; color: var(--muted);
       letter-spacing: .1em; text-transform: uppercase;
       margin-bottom: 18px;
     }
@@ -107,71 +99,86 @@
 
     input[type=number] {
       flex: 1; min-width: 100px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(80,220,160,0.25);
+      background: #faf7f5;
+      border: 1px solid rgba(176,125,160,0.3);
       border-radius: 8px;
       padding: 14px 18px;
       font-size: 26px;
       font-family: 'Courier New', monospace;
-      color: #fff;
+      color: var(--text);
       outline: none;
       transition: border-color .2s;
       -moz-appearance: textfield;
     }
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
-    input[type=number].err { border-color: #ff6b6b; }
+    input[type=number].err { border-color: #e07070; }
     input[type=number]:focus { border-color: var(--accent); }
 
-    .error-msg { color: #ff6b6b; font-size: 12px; margin-top: 6px; min-height: 16px; }
+    .error-msg { color: #d06060; font-size: 12px; margin-top: 6px; min-height: 16px; }
 
     .btn-submit {
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       border: none; border-radius: 8px;
       padding: 14px 28px;
       font-size: 14px; font-family: 'Courier New', monospace;
-      font-weight: 700; color: #0a0a14;
+      font-weight: 700; color: #fff;
       cursor: pointer; letter-spacing: .1em;
       text-transform: uppercase;
       transition: transform .15s, box-shadow .15s;
       white-space: nowrap;
     }
-    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(80,220,160,0.3); }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(176,125,160,0.25); }
     .btn-submit:active { transform: translateY(0); }
 
     /* ── Success banner ── */
     .success {
-      background: rgba(80,220,160,0.06);
-      border: 1px solid rgba(80,220,160,0.3);
+      background: rgba(176,125,160,0.06);
+      border: 1px solid rgba(176,125,160,0.25);
       border-radius: 12px;
       padding: 24px 32px;
       margin-bottom: 32px;
       text-align: center;
     }
-    .success .tick { font-size: 28px; margin-bottom: 8px; }
+    .success .tick { font-size: 28px; margin-bottom: 8px; color: var(--accent); }
     .success p { color: var(--accent); font-size: 14px; letter-spacing: .07em; }
 
     /* ── Setup banner ── */
     .setup-banner {
-      background: rgba(255,180,50,0.06);
-      border: 1px solid rgba(255,180,50,0.25);
+      background: rgba(220,170,80,0.08);
+      border: 1px solid rgba(220,170,80,0.3);
       border-radius: 12px;
       padding: 20px 24px;
       margin-bottom: 32px;
       font-size: 13px;
-      color: #ffb432;
+      color: #a07030;
       line-height: 1.7;
     }
-    .setup-banner strong { color: #ffd080; }
+    .setup-banner strong { color: #886020; }
     .setup-banner code {
-      background: rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.05);
       padding: 2px 7px; border-radius: 4px;
       font-family: 'Courier New', monospace;
-      font-size: 12px; color: #ffe0a0;
+      font-size: 12px; color: #886020;
     }
     .setup-banner ol { padding-left: 20px; margin-top: 10px; }
     .setup-banner li { margin-bottom: 6px; }
-    .setup-banner a { color: #ffd080; }
+    .setup-banner a { color: #886020; }
+
+    /* ── Gate message ── */
+    .gate-msg {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px 32px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: .04em;
+      line-height: 1.7;
+      box-shadow: 0 2px 12px rgba(176,125,160,0.06);
+    }
+    .gate-msg .lock { font-size: 32px; margin-bottom: 12px; }
 
     /* ── Stats ── */
     .stats-grid {
@@ -186,6 +193,7 @@
       border-radius: 8px;
       padding: 14px 12px;
       text-align: center;
+      box-shadow: 0 1px 6px rgba(176,125,160,0.04);
     }
     .stat-val { font-size: 24px; font-weight: 900; color: var(--accent); letter-spacing: -.02em; }
     .stat-lbl { font-size: 10px; color: var(--dim); letter-spacing: .15em; text-transform: uppercase; margin-top: 4px; }
@@ -196,6 +204,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 32px 24px 20px;
+      box-shadow: 0 2px 12px rgba(176,125,160,0.06);
     }
     .chart-title {
       font-size: 11px; color: var(--dim);
@@ -225,10 +234,10 @@
     .bar-rect {
       width: 100%;
       border-radius: 4px 4px 2px 2px;
-      background: #1a1a2e;
+      background: #f0e8f0;
       transition: height .55s cubic-bezier(.34,1.56,.64,1), background .2s, box-shadow .2s;
     }
-    .bar-col:hover .bar-rect { box-shadow: 0 0 14px rgba(80,220,160,0.35); }
+    .bar-col:hover .bar-rect { box-shadow: 0 0 14px rgba(176,125,160,0.2); }
 
     .x-axis { display: flex; gap: 5px; }
     .x-lbl { flex: 1; text-align: center; font-size: 9px; color: var(--dim); }
@@ -267,13 +276,13 @@
 
   <!-- Setup instructions shown when Firebase is not configured -->
   <div class="setup-banner" id="setupBanner" style="display:none">
-    <strong>⚙️ One-time Firebase setup required</strong>
+    <strong>One-time Firebase setup required</strong>
     <ol>
       <li>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → <strong>Add project</strong> (free Spark plan).</li>
       <li>In the project: <strong>Build → Realtime Database → Create database</strong> → choose <em>Start in test mode</em>.</li>
-      <li>Click the ⚙️ gear → <strong>Project settings</strong> → scroll to <em>Your apps</em> → <strong>&lt;/&gt; Web</strong> → register app → copy the <code>firebaseConfig</code> object.</li>
+      <li>Click the gear → <strong>Project settings</strong> → scroll to <em>Your apps</em> → <strong>&lt;/&gt; Web</strong> → register app → copy the <code>firebaseConfig</code> object.</li>
       <li>Open <code>index.html</code> in a text editor and replace the <code>PASTE_YOUR_…</code> placeholders near the top of the <code>&lt;script&gt;</code> section.</li>
-      <li>Push to GitHub Pages — done! 🎉</li>
+      <li>Push to GitHub Pages — done!</li>
     </ol>
   </div>
 
@@ -295,24 +304,33 @@
     <p>Score submitted anonymously. Distribution updates live below.</p>
   </div>
 
-  <!-- Stats -->
-  <div class="stats-grid" id="statsGrid" style="display:none">
-    <div class="stat-box"><div class="stat-val" id="sCount">0</div><div class="stat-lbl">Submissions</div></div>
-    <div class="stat-box"><div class="stat-val" id="sMean">–</div><div class="stat-lbl">Average</div></div>
-    <div class="stat-box"><div class="stat-val" id="sMedian">–</div><div class="stat-lbl">Median</div></div>
-    <div class="stat-box"><div class="stat-val" id="sMin">–</div><div class="stat-lbl">Lowest</div></div>
-    <div class="stat-box"><div class="stat-val" id="sMax">–</div><div class="stat-lbl">Highest</div></div>
+  <!-- Gate message (shown when user hasn't submitted yet) -->
+  <div class="gate-msg" id="gateMsg">
+    <div class="lock">🔒</div>
+    <p>Submit your score above to unlock the class distribution.</p>
   </div>
 
-  <!-- Histogram -->
-  <div class="chart-wrap">
-    <p class="chart-title" id="chartTitle">Score Distribution · waiting for submissions</p>
-    <div class="bars" id="barsContainer"></div>
-    <div class="x-axis" id="xAxis"></div>
-    <div class="empty-msg" id="emptyMsg">No scores yet. Be the first!</div>
-  </div>
+  <!-- Results section (hidden until user submits) -->
+  <div id="resultsSection" style="display:none">
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid" style="display:none">
+      <div class="stat-box"><div class="stat-val" id="sCount">0</div><div class="stat-lbl">Submissions</div></div>
+      <div class="stat-box"><div class="stat-val" id="sMean">–</div><div class="stat-lbl">Average</div></div>
+      <div class="stat-box"><div class="stat-val" id="sMedian">–</div><div class="stat-lbl">Median</div></div>
+      <div class="stat-box"><div class="stat-val" id="sMin">–</div><div class="stat-lbl">Lowest</div></div>
+      <div class="stat-box"><div class="stat-val" id="sMax">–</div><div class="stat-lbl">Highest</div></div>
+    </div>
 
-  <p class="footer">UPDATES IN REAL-TIME · FULLY ANONYMOUS · NO LOGIN REQUIRED</p>
+    <!-- Histogram -->
+    <div class="chart-wrap">
+      <p class="chart-title" id="chartTitle">Score Distribution · waiting for submissions</p>
+      <div class="bars" id="barsContainer"></div>
+      <div class="x-axis" id="xAxis"></div>
+      <div class="empty-msg" id="emptyMsg">No scores yet. Be the first!</div>
+    </div>
+
+    <p class="footer">UPDATES IN REAL-TIME · FULLY ANONYMOUS · NO LOGIN REQUIRED</p>
+  </div>
 </div>
 
 <!-- Firebase SDK (v9 compat) -->
@@ -321,14 +339,12 @@
 
 <script>
 /* ═══════════════════════════════════════════════
-   🔧 PASTE YOUR FIREBASE CONFIG HERE
-   Replace every PASTE_YOUR_… value below.
-   Get it from: Firebase Console → Project Settings → Your apps → Web
+   PASTE YOUR FIREBASE CONFIG HERE
    ═══════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey:            "AIzaSyATBPca_RlhhuEljexzrWEaqvsgoc1dqd8",
   authDomain:        "macro-jan-exam.firebaseapp.com",
-  databaseURL:       "https://macro-jan-exam-default-rtdb.firebaseio.com",   // e.g. https://my-project-default-rtdb.firebaseio.com
+  databaseURL:       "https://macro-jan-exam-default-rtdb.firebaseio.com",
   projectId:         "macro-jan-exam",
   storageBucket:     "macro-jan-exam.firebasestorage.app",
   messagingSenderId: "793513534672",
@@ -336,11 +352,34 @@ const firebaseConfig = {
 };
 /* ═══════════════════════════════════════════════ */
 
+// ── Submission gate (localStorage) ────────────────────────────────────────
+const STORAGE_KEY = "classScoreSubmitted";
+
+function hasSubmitted() {
+  return localStorage.getItem(STORAGE_KEY) === "true";
+}
+
+function markSubmitted() {
+  localStorage.setItem(STORAGE_KEY, "true");
+}
+
+function showResults() {
+  document.getElementById("gateMsg").style.display = "none";
+  document.getElementById("resultsSection").style.display = "block";
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────
 const isConfigured = !firebaseConfig.apiKey.startsWith("PASTE_");
 
 let scores = [];
 let db, scoresRef;
+
+// If user already submitted before, restore the results view
+if (hasSubmitted()) {
+  document.getElementById("inputCard").style.display = "none";
+  document.getElementById("successBanner").style.display = "block";
+  showResults();
+}
 
 if (isConfigured) {
   firebase.initializeApp(firebaseConfig);
@@ -355,7 +394,6 @@ if (isConfigured) {
   });
 } else {
   document.getElementById("setupBanner").style.display = "block";
-  // Fallback: local-only mode so the UI is still visible
   renderAll();
 }
 
@@ -380,8 +418,12 @@ function submitScore() {
     renderAll();
   }
 
+  // Mark as submitted in localStorage
+  markSubmitted();
+
   document.getElementById("inputCard").style.display = "none";
   document.getElementById("successBanner").style.display = "block";
+  showResults();
 }
 
 // Enter key shortcut
@@ -420,6 +462,9 @@ function calcStats(arr) {
 let barsReady = false;
 
 function renderAll() {
+  // Only render results if user has submitted
+  if (!hasSubmitted()) return;
+
   const bins = buildBins(scores);
   const stats = calcStats(scores);
   const maxCount = Math.max(...bins.map(b => b.count), 1);
@@ -451,7 +496,6 @@ function renderAll() {
     barsContainer.innerHTML = "";
     xAxis.innerHTML = "";
     bins.forEach((bin, i) => {
-      // Bar column
       const col = document.createElement("div");
       col.className = "bar-col";
       col.id = `col-${i}`;
@@ -470,14 +514,12 @@ function renderAll() {
       col.appendChild(rect);
       barsContainer.appendChild(col);
 
-      // X label
       const lbl = document.createElement("div");
       lbl.className = "x-lbl";
       lbl.textContent = bin.label;
       xAxis.appendChild(lbl);
     });
     barsReady = true;
-    // Trigger animation next frame
     requestAnimationFrame(() => updateBars(bins, maxCount));
   } else {
     updateBars(bins, maxCount);
@@ -485,11 +527,12 @@ function renderAll() {
 }
 
 function barColor(count, maxCount) {
-  if (count === 0) return "#1a1a2e";
+  if (count === 0) return "#f0e8f0";
   const t = count / maxCount;
-  const hue = 160 + t * 40;
-  const light = 40 + t * 15;
-  return `hsl(${hue}, 75%, ${light}%)`;
+  const hue = 300 - t * 30;
+  const sat = 30 + t * 20;
+  const light = 80 - t * 20;
+  return `hsl(${hue}, ${sat}%, ${light}%)`;
 }
 
 function updateBars(bins, maxCount) {
