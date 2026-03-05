@@ -192,6 +192,53 @@
     .x-lbl { flex:1; text-align:center; font-size:9px; color:var(--dim); font-weight:600; }
     .empty-msg { text-align:center; padding:28px 0 8px; color:var(--dim); font-size:13px; }
 
+    /* ── Deciles table ── */
+    .deciles-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 22px 18px 18px;
+      margin-top: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .deciles-title {
+      font-size: 12px; color: var(--muted); letter-spacing: .1em;
+      text-transform: uppercase; margin-bottom: 14px; font-weight: 600;
+    }
+    .deciles-table {
+      width: 100%; border-collapse: collapse; font-size: 13px;
+    }
+    .deciles-table th {
+      font-size: 11px; font-weight: 700; letter-spacing: .06em;
+      color: var(--muted); padding: 8px 6px; text-align: center;
+      border-bottom: 2px solid var(--border);
+    }
+    .deciles-table td {
+      text-align: center; padding: 10px 6px; font-weight: 700;
+      font-size: 15px; border-bottom: 1px solid var(--border);
+    }
+    .deciles-table .decile-label {
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      letter-spacing: .06em; text-transform: uppercase;
+    }
+    .micro   .deciles-table td:not(.decile-label) { color: var(--micro-a); }
+    .macro   .deciles-table td:not(.decile-label) { color: var(--macro-a); }
+    .metrics .deciles-table td:not(.decile-label) { color: var(--metrics-a); }
+
+    /* ── Chart hover tooltip ── */
+    .bar-col { position: relative; }
+    .bar-tooltip {
+      display: none; position: absolute; bottom: 100%; left: 50%;
+      transform: translateX(-50%); margin-bottom: 6px;
+      background: var(--text); color: #fff; font-size: 11px;
+      font-weight: 600; padding: 4px 10px; border-radius: 6px;
+      white-space: nowrap; pointer-events: none; z-index: 10;
+    }
+    .bar-tooltip::after {
+      content: ''; position: absolute; top: 100%; left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: var(--text);
+    }
+    .bar-col:hover .bar-tooltip { display: block; }
+
     /* ── Footer ── */
     .footer { text-align:center; margin-top:28px; font-size:11px; color:var(--dim); letter-spacing:.1em; font-weight:600; }
 
@@ -262,14 +309,20 @@
         <div class="stat-box"><div class="stat-val micro" id="micro-count">0</div><div class="stat-lbl">Students</div></div>
         <div class="stat-box"><div class="stat-val micro" id="micro-mean">–</div><div class="stat-lbl">Average</div></div>
         <div class="stat-box"><div class="stat-val micro" id="micro-median">–</div><div class="stat-lbl">Median</div></div>
+        <div class="stat-box"><div class="stat-val micro" id="micro-stddev">–</div><div class="stat-lbl">Std Dev</div></div>
         <div class="stat-box"><div class="stat-val micro" id="micro-min">–</div><div class="stat-lbl">Lowest</div></div>
         <div class="stat-box"><div class="stat-val micro" id="micro-max">–</div><div class="stat-lbl">Highest</div></div>
+        <div class="stat-box"><div class="stat-val micro" id="micro-pctile">–</div><div class="stat-lbl">Your %ile</div></div>
       </div>
       <div class="chart-wrap">
         <p class="chart-title" id="title-micro">Micro Distribution</p>
         <div class="bars" id="bars-micro"></div>
         <div class="x-axis" id="xaxis-micro"></div>
         <div class="empty-msg" id="empty-micro">No scores yet.</div>
+      </div>
+      <div class="deciles-wrap micro" id="deciles-micro" style="display:none">
+        <p class="deciles-title">Decile Breakdown</p>
+        <table class="deciles-table"><thead><tr><th>Decile</th><th>10th</th><th>20th</th><th>30th</th><th>40th</th><th>50th</th><th>60th</th><th>70th</th><th>80th</th><th>90th</th></tr></thead><tbody><tr><td class="decile-label">Score</td><td id="micro-d10">–</td><td id="micro-d20">–</td><td id="micro-d30">–</td><td id="micro-d40">–</td><td id="micro-d50">–</td><td id="micro-d60">–</td><td id="micro-d70">–</td><td id="micro-d80">–</td><td id="micro-d90">–</td></tr></tbody></table>
       </div>
     </div>
   </div>
@@ -302,14 +355,20 @@
         <div class="stat-box"><div class="stat-val macro" id="macro-count">0</div><div class="stat-lbl">Students</div></div>
         <div class="stat-box"><div class="stat-val macro" id="macro-mean">–</div><div class="stat-lbl">Average</div></div>
         <div class="stat-box"><div class="stat-val macro" id="macro-median">–</div><div class="stat-lbl">Median</div></div>
+        <div class="stat-box"><div class="stat-val macro" id="macro-stddev">–</div><div class="stat-lbl">Std Dev</div></div>
         <div class="stat-box"><div class="stat-val macro" id="macro-min">–</div><div class="stat-lbl">Lowest</div></div>
         <div class="stat-box"><div class="stat-val macro" id="macro-max">–</div><div class="stat-lbl">Highest</div></div>
+        <div class="stat-box"><div class="stat-val macro" id="macro-pctile">–</div><div class="stat-lbl">Your %ile</div></div>
       </div>
       <div class="chart-wrap">
         <p class="chart-title" id="title-macro">Macro Distribution</p>
         <div class="bars" id="bars-macro"></div>
         <div class="x-axis" id="xaxis-macro"></div>
         <div class="empty-msg" id="empty-macro">No scores yet.</div>
+      </div>
+      <div class="deciles-wrap macro" id="deciles-macro" style="display:none">
+        <p class="deciles-title">Decile Breakdown</p>
+        <table class="deciles-table"><thead><tr><th>Decile</th><th>10th</th><th>20th</th><th>30th</th><th>40th</th><th>50th</th><th>60th</th><th>70th</th><th>80th</th><th>90th</th></tr></thead><tbody><tr><td class="decile-label">Score</td><td id="macro-d10">–</td><td id="macro-d20">–</td><td id="macro-d30">–</td><td id="macro-d40">–</td><td id="macro-d50">–</td><td id="macro-d60">–</td><td id="macro-d70">–</td><td id="macro-d80">–</td><td id="macro-d90">–</td></tr></tbody></table>
       </div>
     </div>
   </div>
@@ -342,14 +401,20 @@
         <div class="stat-box"><div class="stat-val metrics" id="metrics-count">0</div><div class="stat-lbl">Students</div></div>
         <div class="stat-box"><div class="stat-val metrics" id="metrics-mean">–</div><div class="stat-lbl">Average</div></div>
         <div class="stat-box"><div class="stat-val metrics" id="metrics-median">–</div><div class="stat-lbl">Median</div></div>
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-stddev">–</div><div class="stat-lbl">Std Dev</div></div>
         <div class="stat-box"><div class="stat-val metrics" id="metrics-min">–</div><div class="stat-lbl">Lowest</div></div>
         <div class="stat-box"><div class="stat-val metrics" id="metrics-max">–</div><div class="stat-lbl">Highest</div></div>
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-pctile">–</div><div class="stat-lbl">Your %ile</div></div>
       </div>
       <div class="chart-wrap">
         <p class="chart-title" id="title-metrics">Metrics Distribution</p>
         <div class="bars" id="bars-metrics"></div>
         <div class="x-axis" id="xaxis-metrics"></div>
         <div class="empty-msg" id="empty-metrics">No scores yet.</div>
+      </div>
+      <div class="deciles-wrap metrics" id="deciles-metrics" style="display:none">
+        <p class="deciles-title">Decile Breakdown</p>
+        <table class="deciles-table"><thead><tr><th>Decile</th><th>10th</th><th>20th</th><th>30th</th><th>40th</th><th>50th</th><th>60th</th><th>70th</th><th>80th</th><th>90th</th></tr></thead><tbody><tr><td class="decile-label">Score</td><td id="metrics-d10">–</td><td id="metrics-d20">–</td><td id="metrics-d30">–</td><td id="metrics-d40">–</td><td id="metrics-d50">–</td><td id="metrics-d60">–</td><td id="metrics-d70">–</td><td id="metrics-d80">–</td><td id="metrics-d90">–</td></tr></tbody></table>
       </div>
     </div>
   </div>
@@ -456,6 +521,7 @@ function submitScore(exam) {
 
   state[exam].submitted = true;
   localStorage.setItem(`classScore_${exam}_submitted`, 'true');
+  localStorage.setItem(`classScore_${exam}_value`, String(val));
 
   // Hide input form
   input.parentElement.style.display = 'none';
@@ -493,13 +559,35 @@ function buildBins(scores) {
 
 function calcStats(arr) {
   if (!arr.length) return null;
-  const s = [...arr].sort((a,b)=>a-b), m = Math.floor(s.length/2);
+  const s = [...arr].sort((a,b)=>a-b), n = s.length, m = Math.floor(n/2);
+  const mean = s.reduce((a,b)=>a+b,0)/n;
+  const variance = s.reduce((sum,v) => sum + (v - mean) ** 2, 0) / n;
+  const stddev = Math.sqrt(variance);
   return {
-    count:  s.length,
-    mean:   (s.reduce((a,b)=>a+b,0)/s.length).toFixed(1),
-    median: s.length%2 ? s[m] : ((s[m-1]+s[m])/2).toFixed(1),
-    min: s[0], max: s[s.length-1],
+    count:  n,
+    mean:   mean.toFixed(1),
+    median: n%2 ? s[m] : ((s[m-1]+s[m])/2).toFixed(1),
+    stddev: stddev.toFixed(1),
+    min: s[0], max: s[n-1],
+    sorted: s,
   };
+}
+
+function calcPercentile(sorted, score) {
+  if (!sorted.length) return '–';
+  const below = sorted.filter(s => s < score).length;
+  return Math.round((below / sorted.length) * 100);
+}
+
+function calcDeciles(sorted) {
+  if (!sorted.length) return null;
+  const n = sorted.length;
+  const pct = p => {
+    const rank = (p / 100) * (n - 1);
+    const lo = Math.floor(rank), hi = Math.ceil(rank), frac = rank - lo;
+    return (sorted[lo] * (1 - frac) + sorted[hi] * frac).toFixed(1);
+  };
+  return { d10:pct(10), d20:pct(20), d30:pct(30), d40:pct(40), d50:pct(50), d60:pct(60), d70:pct(70), d80:pct(80), d90:pct(90) };
 }
 
 // ── Render ────────────────────────────────────────────────────────────────
@@ -513,8 +601,25 @@ function renderChart(exam) {
     document.getElementById(`${exam}-count`).textContent  = stats.count;
     document.getElementById(`${exam}-mean`).textContent   = stats.mean;
     document.getElementById(`${exam}-median`).textContent = stats.median;
+    document.getElementById(`${exam}-stddev`).textContent = stats.stddev;
     document.getElementById(`${exam}-min`).textContent    = stats.min;
     document.getElementById(`${exam}-max`).textContent    = stats.max;
+
+    // Percentile of user's score
+    const userScore = localStorage.getItem(`classScore_${exam}_value`);
+    if (userScore !== null) {
+      const pctile = calcPercentile(stats.sorted, parseInt(userScore, 10));
+      document.getElementById(`${exam}-pctile`).textContent = pctile + '%';
+    }
+
+    // Deciles table
+    const dec = calcDeciles(stats.sorted);
+    if (dec) {
+      [10,20,30,40,50,60,70,80,90].forEach(p => {
+        document.getElementById(`${exam}-d${p}`).textContent = dec[`d${p}`];
+      });
+      document.getElementById(`deciles-${exam}`).style.display = 'block';
+    }
   }
 
   document.getElementById(`title-${exam}`).textContent =
@@ -531,9 +636,10 @@ function renderChart(exam) {
       const col  = document.createElement('div'); col.className='bar-col';
       const tip  = document.createElement('div'); tip.className='bar-tip'; tip.id=`${exam}-tip-${i}`;
       tip.style.color = ACCENT[exam].tip;
+      const tooltip = document.createElement('div'); tooltip.className='bar-tooltip'; tooltip.id=`${exam}-tooltip-${i}`;
       const rect = document.createElement('div'); rect.className='bar-rect'; rect.id=`${exam}-bar-${i}`;
       rect.style.height='0px'; rect.style.transitionDelay=`${i*0.04}s`;
-      col.appendChild(tip); col.appendChild(rect); barsEl.appendChild(col);
+      col.appendChild(tooltip); col.appendChild(tip); col.appendChild(rect); barsEl.appendChild(col);
       const lbl = document.createElement('div'); lbl.className='x-lbl'; lbl.textContent=bin.label;
       xaxisEl.appendChild(lbl);
     });
@@ -546,14 +652,22 @@ function renderChart(exam) {
 
 function updateBars(exam, bins, maxCount) {
   const maxPx = 150;
+  const total = bins.reduce((s,b) => s + b.count, 0);
   bins.forEach((bin, i) => {
     const bar = document.getElementById(`${exam}-bar-${i}`);
     const tip = document.getElementById(`${exam}-tip-${i}`);
+    const tooltip = document.getElementById(`${exam}-tooltip-${i}`);
     if (!bar) return;
     const h = bin.count > 0 ? Math.max((bin.count/maxCount)*maxPx, 5) : 0;
     bar.style.height = `${h}px`;
     bar.style.background = bin.count===0 ? '#eef0f7' : ACCENT[exam].fill(bin.count/maxCount);
     tip.textContent = bin.count > 0 ? bin.count : '';
+    if (tooltip) {
+      const lo = i * 10, hi = i === 10 ? 100 : lo + 9;
+      const range = i === 10 ? '100' : `${lo}–${hi}`;
+      const pct = total > 0 ? ((bin.count / total) * 100).toFixed(1) : 0;
+      tooltip.textContent = bin.count > 0 ? `${range}: ${bin.count} student${bin.count!==1?'s':''} (${pct}%)` : '';
+    }
   });
 }
 </script>
