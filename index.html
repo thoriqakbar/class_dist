@@ -215,7 +215,7 @@
   </header>
 
   <div class="setup-banner" id="setupBanner" style="display:none">
-    <strong>⚙️ One-time Firebase setup required</strong>
+    <strong>One-time Firebase setup required</strong>
     <ol>
       <li>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → <strong>Add project</strong> (free Spark plan).</li>
       <li>In the project: <strong>Build → Realtime Database → Create database</strong> → choose <em>Start in test mode</em>.</li>
@@ -354,7 +354,8 @@
     </div>
   </div>
 
-  <p class="footer">UPDATES IN REAL-TIME · FULLY ANONYMOUS · NO LOGIN REQUIRED</p>
+    <p class="footer">UPDATES IN REAL-TIME · FULLY ANONYMOUS · NO LOGIN REQUIRED</p>
+  </div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -389,6 +390,13 @@ EXAMS.forEach(e => state[e] = { scores:[], barsReady:false, submitted:false });
 // ── Firebase ──────────────────────────────────────────────────────────────
 const isConfigured = !firebaseConfig.apiKey.startsWith("PASTE_");
 let db;
+
+// If user already submitted before, restore the results view
+if (hasSubmitted()) {
+  document.getElementById("inputCard").style.display = "none";
+  document.getElementById("successBanner").style.display = "block";
+  showResults();
+}
 
 if (isConfigured) {
   firebase.initializeApp(firebaseConfig);
