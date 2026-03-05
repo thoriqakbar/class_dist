@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Class Score Distribution</title>
   <style>
-    /* ── Reset & base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg:      #0a0a14;
       --surface: rgba(255,255,255,0.03);
       --border:  rgba(255,255,255,0.08);
-      --accent:  #50dcA0;
-      --accent2: #30c080;
       --text:    #e8e8f0;
       --muted:   #666680;
       --dim:     #333350;
+      --micro-a:   #50dcA0; --micro-b:   #30c080;
+      --macro-a:   #60b8ff; --macro-b:   #3a8fe8;
+      --metrics-a: #e07aff; --metrics-b: #b850e0;
     }
 
     body {
@@ -27,7 +27,6 @@
       overflow-x: hidden;
     }
 
-    /* grain overlay */
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -35,300 +34,276 @@
       opacity: 0.04; pointer-events: none; z-index: 100;
     }
 
-    /* ambient glow */
-    body::after {
-      content: '';
-      position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
-      width: 600px; height: 300px; border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(80,220,160,0.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    /* ── Layout ── */
-    .wrap {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 48px 24px 80px;
-      position: relative; z-index: 1;
-    }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; position: relative; z-index: 1; }
 
     /* ── Header ── */
     .badge {
       display: inline-block;
-      background: rgba(80,220,160,0.08);
-      border: 1px solid rgba(80,220,160,0.2);
-      border-radius: 4px;
-      padding: 4px 14px;
-      font-size: 11px;
-      letter-spacing: .2em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 16px;
+      background: rgba(80,220,160,0.08); border: 1px solid rgba(80,220,160,0.2);
+      border-radius: 4px; padding: 4px 14px; font-size: 11px; letter-spacing: .2em;
+      color: var(--micro-a); text-transform: uppercase; margin-bottom: 16px;
     }
-
-    h1 {
-      font-size: clamp(30px, 7vw, 54px);
-      font-weight: 900;
-      letter-spacing: -.03em;
-      line-height: 1.1;
-      margin-bottom: 4px;
-    }
-    h1.line1 {
-      background: linear-gradient(135deg, #fff 0%, #a0f0cc 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    h1.line2 {
-      background: linear-gradient(135deg, #a0f0cc 0%, var(--accent) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
-    }
-
+    h1 { font-size: clamp(28px,6vw,50px); font-weight: 900; letter-spacing: -.03em; line-height: 1.1; margin-bottom: 4px; }
+    h1.line1 { background: linear-gradient(135deg,#fff 0%,#c0f0e0 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    h1.line2 { background: linear-gradient(135deg,#a0f0cc 0%,#50dcA0 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:12px; }
     .subtitle { color: var(--muted); font-size: 14px; letter-spacing: .04em; }
-
-    header { text-align: center; margin-bottom: 48px; }
-
-    /* ── Card ── */
-    .card {
-      background: var(--surface);
-      border: 1px solid rgba(80,220,160,0.15);
-      border-radius: 12px;
-      padding: 32px;
-      margin-bottom: 32px;
-      backdrop-filter: blur(10px);
-    }
-    .card-label {
-      font-size: 11px; color: #8888aa;
-      letter-spacing: .1em; text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-
-    /* ── Input row ── */
-    .input-row { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
-
-    input[type=number] {
-      flex: 1; min-width: 100px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(80,220,160,0.25);
-      border-radius: 8px;
-      padding: 14px 18px;
-      font-size: 26px;
-      font-family: 'Courier New', monospace;
-      color: #fff;
-      outline: none;
-      transition: border-color .2s;
-      -moz-appearance: textfield;
-    }
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
-    input[type=number].err { border-color: #ff6b6b; }
-    input[type=number]:focus { border-color: var(--accent); }
-
-    .error-msg { color: #ff6b6b; font-size: 12px; margin-top: 6px; min-height: 16px; }
-
-    .btn-submit {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none; border-radius: 8px;
-      padding: 14px 28px;
-      font-size: 14px; font-family: 'Courier New', monospace;
-      font-weight: 700; color: #0a0a14;
-      cursor: pointer; letter-spacing: .1em;
-      text-transform: uppercase;
-      transition: transform .15s, box-shadow .15s;
-      white-space: nowrap;
-    }
-    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(80,220,160,0.3); }
-    .btn-submit:active { transform: translateY(0); }
-
-    /* ── Success banner ── */
-    .success {
-      background: rgba(80,220,160,0.06);
-      border: 1px solid rgba(80,220,160,0.3);
-      border-radius: 12px;
-      padding: 24px 32px;
-      margin-bottom: 32px;
-      text-align: center;
-    }
-    .success .tick { font-size: 28px; margin-bottom: 8px; }
-    .success p { color: var(--accent); font-size: 14px; letter-spacing: .07em; }
+    header { text-align: center; margin-bottom: 44px; }
 
     /* ── Setup banner ── */
     .setup-banner {
-      background: rgba(255,180,50,0.06);
-      border: 1px solid rgba(255,180,50,0.25);
-      border-radius: 12px;
-      padding: 20px 24px;
-      margin-bottom: 32px;
-      font-size: 13px;
-      color: #ffb432;
-      line-height: 1.7;
+      background: rgba(255,180,50,0.06); border: 1px solid rgba(255,180,50,0.25);
+      border-radius: 12px; padding: 20px 24px; margin-bottom: 28px;
+      font-size: 13px; color: #ffb432; line-height: 1.7;
     }
     .setup-banner strong { color: #ffd080; }
-    .setup-banner code {
-      background: rgba(255,255,255,0.08);
-      padding: 2px 7px; border-radius: 4px;
-      font-family: 'Courier New', monospace;
-      font-size: 12px; color: #ffe0a0;
-    }
+    .setup-banner code { background: rgba(255,255,255,0.08); padding:2px 7px; border-radius:4px; font-family:'Courier New',monospace; font-size:12px; color:#ffe0a0; }
     .setup-banner ol { padding-left: 20px; margin-top: 10px; }
     .setup-banner li { margin-bottom: 6px; }
     .setup-banner a { color: #ffd080; }
 
+    /* ── Tabs ── */
+    .tabs {
+      display: flex; border-radius: 12px 12px 0 0; overflow: hidden;
+      border: 1px solid var(--border); border-bottom: none;
+    }
+    .tab-btn {
+      flex: 1; padding: 16px 12px; background: rgba(255,255,255,0.02);
+      border: none; border-right: 1px solid var(--border);
+      font-family: 'Courier New', monospace; font-size: 12px; font-weight: 700;
+      letter-spacing: .15em; text-transform: uppercase; color: var(--muted);
+      cursor: pointer; transition: background .2s, color .2s; position: relative;
+    }
+    .tab-btn:last-child { border-right: none; }
+    .tab-btn::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:transparent; transition:background .2s; }
+    .tab-btn.micro.active   { color:var(--micro-a);   background:rgba(80,220,160,0.06);  }
+    .tab-btn.macro.active   { color:var(--macro-a);   background:rgba(96,184,255,0.06);  }
+    .tab-btn.metrics.active { color:var(--metrics-a); background:rgba(224,122,255,0.06); }
+    .tab-btn.micro.active::after   { background:var(--micro-a);   }
+    .tab-btn.macro.active::after   { background:var(--macro-a);   }
+    .tab-btn.metrics.active::after { background:var(--metrics-a); }
+
+    /* ── Panels ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .panel-body {
+      border: 1px solid var(--border); border-top: none; border-radius: 0 0 12px 12px;
+      padding: 30px; margin-bottom: 24px;
+    }
+    .micro.panel-body   { background: rgba(80,220,160,0.025); }
+    .macro.panel-body   { background: rgba(96,184,255,0.025); }
+    .metrics.panel-body { background: rgba(224,122,255,0.025); }
+
+    /* ── Input ── */
+    .input-label {
+      display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px;
+    }
+    .micro   .input-label { color: var(--micro-a); }
+    .macro   .input-label { color: var(--macro-a); }
+    .metrics .input-label { color: var(--metrics-a); }
+
+    .input-row { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+
+    input[type=number] {
+      flex:1; min-width:90px; background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.12); border-radius:8px;
+      padding:13px 16px; font-size:24px; font-family:'Courier New',monospace;
+      color:#fff; outline:none; transition:border-color .2s; -moz-appearance:textfield;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type=number].err { border-color:#ff6b6b !important; }
+    .micro   input[type=number]:focus { border-color:var(--micro-a);   }
+    .macro   input[type=number]:focus { border-color:var(--macro-a);   }
+    .metrics input[type=number]:focus { border-color:var(--metrics-a); }
+
+    .error-msg { color:#ff6b6b; font-size:12px; margin-top:6px; min-height:16px; }
+
+    .btn-submit {
+      border:none; border-radius:8px; padding:13px 26px;
+      font-size:13px; font-family:'Courier New',monospace; font-weight:700;
+      color:#0a0a14; cursor:pointer; letter-spacing:.1em; text-transform:uppercase;
+      transition:transform .15s, box-shadow .15s; white-space:nowrap;
+    }
+    .btn-submit:hover { transform:translateY(-2px); }
+    .btn-submit:active { transform:translateY(0); }
+    .micro   .btn-submit { background:linear-gradient(135deg,var(--micro-a),var(--micro-b)); }
+    .macro   .btn-submit { background:linear-gradient(135deg,var(--macro-a),var(--macro-b)); }
+    .metrics .btn-submit { background:linear-gradient(135deg,var(--metrics-a),var(--metrics-b)); }
+    .micro   .btn-submit:hover { box-shadow:0 6px 20px rgba(80,220,160,0.35); }
+    .macro   .btn-submit:hover { box-shadow:0 6px 20px rgba(96,184,255,0.35); }
+    .metrics .btn-submit:hover { box-shadow:0 6px 20px rgba(224,122,255,0.35); }
+
+    /* ── Success ── */
+    .success { border-radius:10px; padding:18px 24px; margin-top:18px; text-align:center; display:none; }
+    .success .tick { font-size:22px; margin-bottom:6px; }
+    .success p { font-size:13px; letter-spacing:.06em; }
+    .micro   .success { background:rgba(80,220,160,0.06);  border:1px solid rgba(80,220,160,0.25);  }
+    .macro   .success { background:rgba(96,184,255,0.06);  border:1px solid rgba(96,184,255,0.25);  }
+    .metrics .success { background:rgba(224,122,255,0.06); border:1px solid rgba(224,122,255,0.25); }
+    .micro   .success p { color:var(--micro-a);   }
+    .macro   .success p { color:var(--macro-a);   }
+    .metrics .success p { color:var(--metrics-a); }
+
     /* ── Stats ── */
     .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-      gap: 12px;
-      margin-bottom: 32px;
+      display:none; grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
+      gap:10px; margin-bottom:22px;
     }
-    .stat-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px 12px;
-      text-align: center;
-    }
-    .stat-val { font-size: 24px; font-weight: 900; color: var(--accent); letter-spacing: -.02em; }
-    .stat-lbl { font-size: 10px; color: var(--dim); letter-spacing: .15em; text-transform: uppercase; margin-top: 4px; }
+    .stat-box { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 10px; text-align:center; }
+    .stat-val { font-size:22px; font-weight:900; letter-spacing:-.02em; }
+    .micro   .stat-val { color:var(--micro-a);   }
+    .macro   .stat-val { color:var(--macro-a);   }
+    .metrics .stat-val { color:var(--metrics-a); }
+    .stat-lbl { font-size:9px; color:var(--dim); letter-spacing:.15em; text-transform:uppercase; margin-top:4px; }
 
     /* ── Chart ── */
-    .chart-wrap {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 32px 24px 20px;
-    }
-    .chart-title {
-      font-size: 11px; color: var(--dim);
-      letter-spacing: .2em; text-transform: uppercase;
-      margin-bottom: 28px;
-    }
+    .chart-wrap { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:26px 20px 18px; }
+    .chart-title { font-size:11px; color:var(--dim); letter-spacing:.2em; text-transform:uppercase; margin-bottom:22px; }
+    .bars { display:flex; align-items:flex-end; gap:4px; height:175px; margin-bottom:8px; }
+    .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; gap:3px; cursor:default; }
+    .bar-tip { font-size:10px; font-weight:700; color:transparent; transition:color .15s; min-height:14px; line-height:14px; }
+    .bar-col:hover .bar-tip { color:inherit !important; }
+    .bar-rect { width:100%; border-radius:3px 3px 2px 2px; background:#1a1a2e; transition:height .55s cubic-bezier(.34,1.56,.64,1),background .2s,box-shadow .2s; }
+    .x-axis { display:flex; gap:4px; }
+    .x-lbl { flex:1; text-align:center; font-size:8px; color:var(--dim); }
+    .empty-msg { text-align:center; padding:28px 0 8px; color:var(--dim); font-size:13px; letter-spacing:.06em; }
 
-    .bars {
-      display: flex;
-      align-items: flex-end;
-      gap: 5px;
-      height: 200px;
-      margin-bottom: 10px;
-    }
-    .bar-col {
-      flex: 1;
-      display: flex; flex-direction: column; align-items: center;
-      height: 100%; justify-content: flex-end;
-      gap: 4px; cursor: default;
-    }
-    .bar-tip {
-      font-size: 11px; font-weight: 700;
-      color: transparent; transition: color .15s;
-      min-height: 16px; line-height: 16px;
-    }
-    .bar-col:hover .bar-tip { color: var(--accent); }
-    .bar-rect {
-      width: 100%;
-      border-radius: 4px 4px 2px 2px;
-      background: #1a1a2e;
-      transition: height .55s cubic-bezier(.34,1.56,.64,1), background .2s, box-shadow .2s;
-    }
-    .bar-col:hover .bar-rect { box-shadow: 0 0 14px rgba(80,220,160,0.35); }
+    .footer { text-align:center; margin-top:24px; font-size:11px; color:var(--dim); letter-spacing:.1em; }
 
-    .x-axis { display: flex; gap: 5px; }
-    .x-lbl { flex: 1; text-align: center; font-size: 9px; color: var(--dim); }
-
-    .empty-msg {
-      text-align: center; padding: 40px 0 10px;
-      color: var(--dim); font-size: 13px; letter-spacing: .06em;
-    }
-
-    /* ── Footer ── */
-    .footer {
-      text-align: center; margin-top: 24px;
-      font-size: 11px; color: var(--dim); letter-spacing: .1em;
-    }
-
-    /* ── Animations ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .wrap > * { animation: fadeUp .5s ease both; }
-    .wrap > *:nth-child(2) { animation-delay: .08s; }
-    .wrap > *:nth-child(3) { animation-delay: .16s; }
-    .wrap > *:nth-child(4) { animation-delay: .24s; }
-    .wrap > *:nth-child(5) { animation-delay: .30s; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+    .wrap > * { animation:fadeUp .45s ease both; }
+    .wrap > *:nth-child(2){animation-delay:.07s}
+    .wrap > *:nth-child(3){animation-delay:.14s}
+    .wrap > *:nth-child(4){animation-delay:.20s}
   </style>
 </head>
 <body>
 <div class="wrap">
+
   <header>
     <div class="badge">Anonymous · Live</div>
     <h1 class="line1">Class Score</h1>
     <h1 class="line2">Distribution</h1>
-    <p class="subtitle">Submit your score anonymously. Watch the class distribution live.</p>
+    <p class="subtitle">Submit your exam scores anonymously — watch the class distributions update live.</p>
   </header>
 
-  <!-- Setup instructions shown when Firebase is not configured -->
   <div class="setup-banner" id="setupBanner" style="display:none">
     <strong>⚙️ One-time Firebase setup required</strong>
     <ol>
       <li>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → <strong>Add project</strong> (free Spark plan).</li>
       <li>In the project: <strong>Build → Realtime Database → Create database</strong> → choose <em>Start in test mode</em>.</li>
-      <li>Click the ⚙️ gear → <strong>Project settings</strong> → scroll to <em>Your apps</em> → <strong>&lt;/&gt; Web</strong> → register app → copy the <code>firebaseConfig</code> object.</li>
-      <li>Open <code>index.html</code> in a text editor and replace the <code>PASTE_YOUR_…</code> placeholders near the top of the <code>&lt;script&gt;</code> section.</li>
+      <li>Click the ⚙️ gear → <strong>Project settings</strong> → <em>Your apps</em> → <strong>&lt;/&gt; Web</strong> → register app → copy the <code>firebaseConfig</code> object.</li>
+      <li>Open <code>index.html</code> in a text editor and replace the <code>PASTE_YOUR_…</code> placeholders in the <code>&lt;script&gt;</code> section.</li>
       <li>Push to GitHub Pages — done! 🎉</li>
     </ol>
   </div>
 
-  <!-- Input card -->
-  <div class="card" id="inputCard">
-    <p class="card-label">Enter your score (0 – 100)</p>
-    <div class="input-row">
-      <div style="flex:1;min-width:100px">
-        <input type="number" id="scoreInput" min="0" max="100" placeholder="e.g. 87" autofocus />
-        <div class="error-msg" id="errMsg"></div>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn micro active"  onclick="switchTab('micro')">📈 Micro</button>
+    <button class="tab-btn macro"         onclick="switchTab('macro')">📊 Macro</button>
+    <button class="tab-btn metrics"       onclick="switchTab('metrics')">📐 Metrics</button>
+  </div>
+
+  <!-- MICRO -->
+  <div class="tab-panel micro active" id="panel-micro">
+    <div class="panel-body micro" id="body-micro">
+      <label class="input-label" for="input-micro">Microeconomics — Enter your score (0–100)</label>
+      <div class="input-row">
+        <div style="flex:1;min-width:90px">
+          <input type="number" id="input-micro" min="0" max="100" placeholder="e.g. 87" />
+          <div class="error-msg" id="err-micro"></div>
+        </div>
+        <button class="btn-submit" id="btn-micro" onclick="submitScore('micro')">Submit →</button>
       </div>
-      <button class="btn-submit" id="submitBtn" onclick="submitScore()">Submit →</button>
+      <div class="success micro" id="success-micro"><div class="tick">✓</div><p>Score submitted anonymously.</p></div>
+    </div>
+    <div class="stats-grid micro" id="stats-micro">
+      <div class="stat-box micro"><div class="stat-val" id="micro-count">0</div><div class="stat-lbl">Students</div></div>
+      <div class="stat-box micro"><div class="stat-val" id="micro-mean">–</div><div class="stat-lbl">Average</div></div>
+      <div class="stat-box micro"><div class="stat-val" id="micro-median">–</div><div class="stat-lbl">Median</div></div>
+      <div class="stat-box micro"><div class="stat-val" id="micro-min">–</div><div class="stat-lbl">Lowest</div></div>
+      <div class="stat-box micro"><div class="stat-val" id="micro-max">–</div><div class="stat-lbl">Highest</div></div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title" id="title-micro">Micro Distribution · waiting for submissions</p>
+      <div class="bars" id="bars-micro"></div>
+      <div class="x-axis" id="xaxis-micro"></div>
+      <div class="empty-msg" id="empty-micro">No scores yet. Be the first!</div>
     </div>
   </div>
 
-  <!-- Success banner (hidden until submitted) -->
-  <div class="success" id="successBanner" style="display:none">
-    <div class="tick">✓</div>
-    <p>Score submitted anonymously. Distribution updates live below.</p>
+  <!-- MACRO -->
+  <div class="tab-panel macro" id="panel-macro">
+    <div class="panel-body macro" id="body-macro">
+      <label class="input-label" for="input-macro">Macroeconomics — Enter your score (0–100)</label>
+      <div class="input-row">
+        <div style="flex:1;min-width:90px">
+          <input type="number" id="input-macro" min="0" max="100" placeholder="e.g. 74" />
+          <div class="error-msg" id="err-macro"></div>
+        </div>
+        <button class="btn-submit" id="btn-macro" onclick="submitScore('macro')">Submit →</button>
+      </div>
+      <div class="success macro" id="success-macro"><div class="tick">✓</div><p>Score submitted anonymously.</p></div>
+    </div>
+    <div class="stats-grid macro" id="stats-macro">
+      <div class="stat-box macro"><div class="stat-val" id="macro-count">0</div><div class="stat-lbl">Students</div></div>
+      <div class="stat-box macro"><div class="stat-val" id="macro-mean">–</div><div class="stat-lbl">Average</div></div>
+      <div class="stat-box macro"><div class="stat-val" id="macro-median">–</div><div class="stat-lbl">Median</div></div>
+      <div class="stat-box macro"><div class="stat-val" id="macro-min">–</div><div class="stat-lbl">Lowest</div></div>
+      <div class="stat-box macro"><div class="stat-val" id="macro-max">–</div><div class="stat-lbl">Highest</div></div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title" id="title-macro">Macro Distribution · waiting for submissions</p>
+      <div class="bars" id="bars-macro"></div>
+      <div class="x-axis" id="xaxis-macro"></div>
+      <div class="empty-msg" id="empty-macro">No scores yet. Be the first!</div>
+    </div>
   </div>
 
-  <!-- Stats -->
-  <div class="stats-grid" id="statsGrid" style="display:none">
-    <div class="stat-box"><div class="stat-val" id="sCount">0</div><div class="stat-lbl">Submissions</div></div>
-    <div class="stat-box"><div class="stat-val" id="sMean">–</div><div class="stat-lbl">Average</div></div>
-    <div class="stat-box"><div class="stat-val" id="sMedian">–</div><div class="stat-lbl">Median</div></div>
-    <div class="stat-box"><div class="stat-val" id="sMin">–</div><div class="stat-lbl">Lowest</div></div>
-    <div class="stat-box"><div class="stat-val" id="sMax">–</div><div class="stat-lbl">Highest</div></div>
-  </div>
-
-  <!-- Histogram -->
-  <div class="chart-wrap">
-    <p class="chart-title" id="chartTitle">Score Distribution · waiting for submissions</p>
-    <div class="bars" id="barsContainer"></div>
-    <div class="x-axis" id="xAxis"></div>
-    <div class="empty-msg" id="emptyMsg">No scores yet. Be the first!</div>
+  <!-- METRICS -->
+  <div class="tab-panel metrics" id="panel-metrics">
+    <div class="panel-body metrics" id="body-metrics">
+      <label class="input-label" for="input-metrics">Econometrics — Enter your score (0–100)</label>
+      <div class="input-row">
+        <div style="flex:1;min-width:90px">
+          <input type="number" id="input-metrics" min="0" max="100" placeholder="e.g. 91" />
+          <div class="error-msg" id="err-metrics"></div>
+        </div>
+        <button class="btn-submit" id="btn-metrics" onclick="submitScore('metrics')">Submit →</button>
+      </div>
+      <div class="success metrics" id="success-metrics"><div class="tick">✓</div><p>Score submitted anonymously.</p></div>
+    </div>
+    <div class="stats-grid metrics" id="stats-metrics">
+      <div class="stat-box metrics"><div class="stat-val" id="metrics-count">0</div><div class="stat-lbl">Students</div></div>
+      <div class="stat-box metrics"><div class="stat-val" id="metrics-mean">–</div><div class="stat-lbl">Average</div></div>
+      <div class="stat-box metrics"><div class="stat-val" id="metrics-median">–</div><div class="stat-lbl">Median</div></div>
+      <div class="stat-box metrics"><div class="stat-val" id="metrics-min">–</div><div class="stat-lbl">Lowest</div></div>
+      <div class="stat-box metrics"><div class="stat-val" id="metrics-max">–</div><div class="stat-lbl">Highest</div></div>
+    </div>
+    <div class="chart-wrap">
+      <p class="chart-title" id="title-metrics">Metrics Distribution · waiting for submissions</p>
+      <div class="bars" id="bars-metrics"></div>
+      <div class="x-axis" id="xaxis-metrics"></div>
+      <div class="empty-msg" id="empty-metrics">No scores yet. Be the first!</div>
+    </div>
   </div>
 
   <p class="footer">UPDATES IN REAL-TIME · FULLY ANONYMOUS · NO LOGIN REQUIRED</p>
 </div>
 
-<!-- Firebase SDK (v9 compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-
 <script>
 /* ═══════════════════════════════════════════════
    🔧 PASTE YOUR FIREBASE CONFIG HERE
-   Replace every PASTE_YOUR_… value below.
    Get it from: Firebase Console → Project Settings → Your apps → Web
    ═══════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey:            "AIzaSyATBPca_RlhhuEljexzrWEaqvsgoc1dqd8",
   authDomain:        "macro-jan-exam.firebaseapp.com",
-  databaseURL:       "https://macro-jan-exam-default-rtdb.firebaseio.com",   // e.g. https://my-project-default-rtdb.firebaseio.com
+  databaseURL:       "https://macro-jan-exam-default-rtdb.firebaseio.com",
   projectId:         "macro-jan-exam",
   storageBucket:     "macro-jan-exam.firebasestorage.app",
   messagingSenderId: "793513534672",
@@ -336,174 +311,158 @@ const firebaseConfig = {
 };
 /* ═══════════════════════════════════════════════ */
 
-// ── Init ──────────────────────────────────────────────────────────────────
-const isConfigured = !firebaseConfig.apiKey.startsWith("PASTE_");
+const EXAMS = ['micro','macro','metrics'];
+const ACCENT = {
+  micro:   { fill: t => `hsl(${160+t*30},75%,${40+t*15}%)`,  tip:'#50dcA0' },
+  macro:   { fill: t => `hsl(${210+t*20},80%,${40+t*15}%)`,  tip:'#60b8ff' },
+  metrics: { fill: t => `hsl(${280+t*20},70%,${42+t*13}%)`,  tip:'#e07aff' },
+};
+const NAMES = { micro:'Micro', macro:'Macro', metrics:'Metrics' };
 
-let scores = [];
-let db, scoresRef;
+const state = {};
+EXAMS.forEach(e => state[e] = { scores:[], barsReady:false });
+
+// ── Firebase init ──────────────────────────────────────────────────────────
+const isConfigured = !firebaseConfig.apiKey.startsWith("PASTE_");
+let db;
 
 if (isConfigured) {
   firebase.initializeApp(firebaseConfig);
   db = firebase.database();
-  scoresRef = db.ref("scores");
-
-  // Real-time listener
-  scoresRef.on("value", snap => {
-    const data = snap.val();
-    scores = data ? Object.values(data) : [];
-    renderAll();
+  EXAMS.forEach(exam => {
+    db.ref(`scores/${exam}`).on("value", snap => {
+      const data = snap.val();
+      state[exam].scores = data ? Object.values(data) : [];
+      renderExam(exam);
+    });
   });
 } else {
   document.getElementById("setupBanner").style.display = "block";
-  // Fallback: local-only mode so the UI is still visible
-  renderAll();
+  EXAMS.forEach(exam => renderExam(exam));
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  EXAMS.forEach(e => {
+    document.getElementById(`panel-${e}`).classList.toggle('active', e===name);
+    document.querySelector(`.tab-btn.${e}`).classList.toggle('active', e===name);
+  });
+  setTimeout(() => document.getElementById(`input-${name}`).focus(), 50);
 }
 
 // ── Submit ────────────────────────────────────────────────────────────────
-function submitScore() {
-  const input = document.getElementById("scoreInput");
-  const errMsg = document.getElementById("errMsg");
-  const val = parseInt(input.value, 10);
+function submitScore(exam) {
+  const input = document.getElementById(`input-${exam}`);
+  const errEl = document.getElementById(`err-${exam}`);
+  const val   = parseInt(input.value, 10);
 
   if (isNaN(val) || val < 0 || val > 100) {
-    errMsg.textContent = "Please enter a score between 0 and 100.";
-    input.classList.add("err");
-    return;
+    errEl.textContent = "Enter a score between 0 and 100.";
+    input.classList.add("err"); return;
   }
-  errMsg.textContent = "";
-  input.classList.remove("err");
+  errEl.textContent = ""; input.classList.remove("err");
 
   if (isConfigured) {
-    scoresRef.push(val);
+    db.ref(`scores/${exam}`).push(val);
   } else {
-    scores.push(val);
-    renderAll();
+    state[exam].scores.push(val);
+    renderExam(exam);
   }
 
-  document.getElementById("inputCard").style.display = "none";
-  document.getElementById("successBanner").style.display = "block";
+  // Hide form, show success
+  input.parentElement.style.display = 'none';
+  document.getElementById(`btn-${exam}`).style.display = 'none';
+  document.querySelector(`#body-${exam} label`).style.display = 'none';
+  document.getElementById(`success-${exam}`).style.display = 'block';
 }
 
-// Enter key shortcut
-document.getElementById("scoreInput").addEventListener("keydown", e => {
-  if (e.key === "Enter") submitScore();
+EXAMS.forEach(exam => {
+  document.getElementById(`input-${exam}`).addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitScore(exam);
+  });
 });
 
-// ── Histogram data ────────────────────────────────────────────────────────
+// ── Data helpers ──────────────────────────────────────────────────────────
 function buildBins(scores) {
-  return Array.from({ length: 11 }, (_, i) => {
-    const low = i * 10;
-    const high = i === 10 ? 100 : low + 9;
-    const label = i === 10 ? "100" : `${low}`;
-    const count = scores.filter(s => i === 10 ? s === 100 : s >= low && s <= high).length;
-    return { low, high, label, count };
+  return Array.from({length:11}, (_,i) => {
+    const low = i*10, high = i===10 ? 100 : low+9;
+    const count = scores.filter(s => i===10 ? s===100 : s>=low && s<=high).length;
+    return { label: String(low), count };
   });
 }
 
 function calcStats(arr) {
   if (!arr.length) return null;
-  const sorted = [...arr].sort((a, b) => a - b);
-  const m = Math.floor(sorted.length / 2);
-  const median = sorted.length % 2 !== 0
-    ? sorted[m]
-    : ((sorted[m - 1] + sorted[m]) / 2).toFixed(1);
+  const s = [...arr].sort((a,b)=>a-b), m = Math.floor(s.length/2);
   return {
-    count: arr.length,
-    mean: (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1),
-    median,
-    min: sorted[0],
-    max: sorted[sorted.length - 1],
+    count:  s.length,
+    mean:   (s.reduce((a,b)=>a+b,0)/s.length).toFixed(1),
+    median: s.length%2 ? s[m] : ((s[m-1]+s[m])/2).toFixed(1),
+    min: s[0], max: s[s.length-1],
   };
 }
 
 // ── Render ────────────────────────────────────────────────────────────────
-let barsReady = false;
+function renderExam(exam) {
+  const scores   = state[exam].scores;
+  const bins     = buildBins(scores);
+  const stats    = calcStats(scores);
+  const maxCount = Math.max(...bins.map(b=>b.count), 1);
 
-function renderAll() {
-  const bins = buildBins(scores);
-  const stats = calcStats(scores);
-  const maxCount = Math.max(...bins.map(b => b.count), 1);
-
-  // Stats strip
   if (stats) {
-    document.getElementById("statsGrid").style.display = "grid";
-    document.getElementById("sCount").textContent  = stats.count;
-    document.getElementById("sMean").textContent   = stats.mean;
-    document.getElementById("sMedian").textContent = stats.median;
-    document.getElementById("sMin").textContent    = stats.min;
-    document.getElementById("sMax").textContent    = stats.max;
+    document.getElementById(`stats-${exam}`).style.display = 'grid';
+    document.getElementById(`${exam}-count`).textContent  = stats.count;
+    document.getElementById(`${exam}-mean`).textContent   = stats.mean;
+    document.getElementById(`${exam}-median`).textContent = stats.median;
+    document.getElementById(`${exam}-min`).textContent    = stats.min;
+    document.getElementById(`${exam}-max`).textContent    = stats.max;
   }
 
-  // Chart title
-  document.getElementById("chartTitle").textContent =
+  document.getElementById(`title-${exam}`).textContent =
     scores.length === 0
-      ? "Score Distribution · waiting for submissions"
-      : `Score Distribution · ${scores.length} student${scores.length !== 1 ? "s" : ""}`;
+      ? `${NAMES[exam]} Distribution · waiting for submissions`
+      : `${NAMES[exam]} Distribution · ${scores.length} student${scores.length!==1?'s':''}`;
 
-  // Empty message
-  document.getElementById("emptyMsg").style.display = scores.length === 0 ? "block" : "none";
+  document.getElementById(`empty-${exam}`).style.display = scores.length===0 ? 'block' : 'none';
 
-  // Build bars on first call, update heights afterwards
-  const barsContainer = document.getElementById("barsContainer");
-  const xAxis = document.getElementById("xAxis");
+  const barsEl  = document.getElementById(`bars-${exam}`);
+  const xaxisEl = document.getElementById(`xaxis-${exam}`);
 
-  if (!barsReady) {
-    barsContainer.innerHTML = "";
-    xAxis.innerHTML = "";
+  if (!state[exam].barsReady) {
+    barsEl.innerHTML = ''; xaxisEl.innerHTML = '';
     bins.forEach((bin, i) => {
-      // Bar column
-      const col = document.createElement("div");
-      col.className = "bar-col";
-      col.id = `col-${i}`;
-
-      const tip = document.createElement("div");
-      tip.className = "bar-tip";
-      tip.id = `tip-${i}`;
-
-      const rect = document.createElement("div");
-      rect.className = "bar-rect";
-      rect.id = `bar-${i}`;
-      rect.style.height = "0px";
-      rect.style.transitionDelay = `${i * 0.04}s`;
-
-      col.appendChild(tip);
-      col.appendChild(rect);
-      barsContainer.appendChild(col);
-
-      // X label
-      const lbl = document.createElement("div");
-      lbl.className = "x-lbl";
-      lbl.textContent = bin.label;
-      xAxis.appendChild(lbl);
+      const col  = document.createElement('div'); col.className='bar-col';
+      const tip  = document.createElement('div'); tip.className='bar-tip'; tip.id=`${exam}-tip-${i}`;
+      tip.style.color = ACCENT[exam].tip;
+      const rect = document.createElement('div'); rect.className='bar-rect'; rect.id=`${exam}-bar-${i}`;
+      rect.style.height='0px'; rect.style.transitionDelay=`${i*0.04}s`;
+      col.appendChild(tip); col.appendChild(rect); barsEl.appendChild(col);
+      const lbl = document.createElement('div'); lbl.className='x-lbl'; lbl.textContent=bin.label;
+      xaxisEl.appendChild(lbl);
     });
-    barsReady = true;
-    // Trigger animation next frame
-    requestAnimationFrame(() => updateBars(bins, maxCount));
+    state[exam].barsReady = true;
+    requestAnimationFrame(() => updateBars(exam, bins, maxCount));
   } else {
-    updateBars(bins, maxCount);
+    updateBars(exam, bins, maxCount);
   }
 }
 
-function barColor(count, maxCount) {
-  if (count === 0) return "#1a1a2e";
-  const t = count / maxCount;
-  const hue = 160 + t * 40;
-  const light = 40 + t * 15;
-  return `hsl(${hue}, 75%, ${light}%)`;
-}
-
-function updateBars(bins, maxCount) {
-  const maxPx = 160;
+function updateBars(exam, bins, maxCount) {
+  const maxPx = 148;
   bins.forEach((bin, i) => {
-    const bar = document.getElementById(`bar-${i}`);
-    const tip = document.getElementById(`tip-${i}`);
+    const bar = document.getElementById(`${exam}-bar-${i}`);
+    const tip = document.getElementById(`${exam}-tip-${i}`);
     if (!bar) return;
-    const h = bin.count > 0 ? Math.max((bin.count / maxCount) * maxPx, 6) : 0;
+    const h = bin.count > 0 ? Math.max((bin.count/maxCount)*maxPx, 5) : 0;
     bar.style.height = `${h}px`;
-    bar.style.background = barColor(bin.count, maxCount);
-    tip.textContent = bin.count > 0 ? bin.count : "";
+    bar.style.background = bin.count===0 ? '#1a1a2e' : ACCENT[exam].fill(bin.count/maxCount);
+    tip.textContent = bin.count > 0 ? bin.count : '';
   });
 }
+</script>
+</body>
+</html>
+
 </script>
 </body>
 </html>
