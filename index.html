@@ -8,76 +8,77 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #0a0a14;
-      --surface: rgba(255,255,255,0.03);
-      --border:  rgba(255,255,255,0.08);
-      --text:    #e8e8f0;
-      --muted:   #666680;
-      --dim:     #333350;
-      --micro-a:   #50dcA0; --micro-b:   #30c080;
-      --macro-a:   #60b8ff; --macro-b:   #3a8fe8;
-      --metrics-a: #e07aff; --metrics-b: #b850e0;
+      --bg:        #f5f6fa;
+      --surface:   #ffffff;
+      --border:    #e2e4ed;
+      --text:      #1a1a2e;
+      --muted:     #7c7f96;
+      --dim:       #b0b3c6;
+      --micro-a:   #12b76a; --micro-b:   #0a8f52;
+      --macro-a:   #2e7ef5; --macro-b:   #1a5fd4;
+      --metrics-a: #9333ea; --metrics-b: #6f1fbb;
     }
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #0a0a14 0%, #0d0d1f 50%, #080810 100%);
-      font-family: 'Courier New', monospace;
+      background: var(--bg);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       color: var(--text);
       overflow-x: hidden;
     }
 
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      opacity: 0.04; pointer-events: none; z-index: 100;
-    }
-
-    .wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; position: relative; z-index: 1; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 52px 24px 80px; }
 
     /* ── Header ── */
+    header { text-align: center; margin-bottom: 44px; }
+
     .badge {
       display: inline-block;
-      background: rgba(80,220,160,0.08); border: 1px solid rgba(80,220,160,0.2);
-      border-radius: 4px; padding: 4px 14px; font-size: 11px; letter-spacing: .2em;
-      color: var(--micro-a); text-transform: uppercase; margin-bottom: 16px;
+      background: #edfbf3; border: 1px solid #a7f0c8;
+      border-radius: 20px; padding: 5px 16px;
+      font-size: 11px; letter-spacing: .15em; font-weight: 600;
+      color: var(--micro-a); text-transform: uppercase; margin-bottom: 20px;
     }
-    h1 { font-size: clamp(28px,6vw,50px); font-weight: 900; letter-spacing: -.03em; line-height: 1.1; margin-bottom: 4px; }
-    h1.line1 { background: linear-gradient(135deg,#fff 0%,#c0f0e0 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    h1.line2 { background: linear-gradient(135deg,#a0f0cc 0%,#50dcA0 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:12px; }
-    .subtitle { color: var(--muted); font-size: 14px; letter-spacing: .04em; }
-    header { text-align: center; margin-bottom: 44px; }
+
+    h1 {
+      font-size: clamp(30px, 6vw, 52px); font-weight: 800;
+      letter-spacing: -.03em; line-height: 1.1; color: var(--text);
+      margin-bottom: 10px;
+    }
+    h1 span { color: var(--micro-a); }
+    .subtitle { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 500px; margin: 0 auto; }
 
     /* ── Setup banner ── */
     .setup-banner {
-      background: rgba(255,180,50,0.06); border: 1px solid rgba(255,180,50,0.25);
-      border-radius: 12px; padding: 20px 24px; margin-bottom: 28px;
-      font-size: 13px; color: #ffb432; line-height: 1.7;
+      background: #fffbeb; border: 1px solid #fcd34d;
+      border-radius: 12px; padding: 18px 22px; margin-bottom: 28px;
+      font-size: 13px; color: #92400e; line-height: 1.7;
     }
-    .setup-banner strong { color: #ffd080; }
-    .setup-banner code { background: rgba(255,255,255,0.08); padding:2px 7px; border-radius:4px; font-family:'Courier New',monospace; font-size:12px; color:#ffe0a0; }
+    .setup-banner strong { color: #78350f; }
+    .setup-banner code { background: rgba(0,0,0,0.06); padding:2px 7px; border-radius:4px; font-family:'Courier New',monospace; font-size:12px; }
     .setup-banner ol { padding-left: 20px; margin-top: 10px; }
     .setup-banner li { margin-bottom: 6px; }
-    .setup-banner a { color: #ffd080; }
+    .setup-banner a { color: #92400e; }
 
     /* ── Tabs ── */
     .tabs {
-      display: flex; border-radius: 12px 12px 0 0; overflow: hidden;
+      display: flex; border-radius: 14px 14px 0 0; overflow: hidden;
       border: 1px solid var(--border); border-bottom: none;
+      background: #f0f1f7;
     }
     .tab-btn {
-      flex: 1; padding: 16px 12px; background: rgba(255,255,255,0.02);
+      flex: 1; padding: 15px 12px; background: transparent;
       border: none; border-right: 1px solid var(--border);
-      font-family: 'Courier New', monospace; font-size: 12px; font-weight: 700;
-      letter-spacing: .15em; text-transform: uppercase; color: var(--muted);
-      cursor: pointer; transition: background .2s, color .2s; position: relative;
+      font-family: inherit; font-size: 13px; font-weight: 600;
+      letter-spacing: .04em; color: var(--muted);
+      cursor: pointer; transition: background .18s, color .18s; position: relative;
     }
     .tab-btn:last-child { border-right: none; }
-    .tab-btn::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:transparent; transition:background .2s; }
-    .tab-btn.micro.active   { color:var(--micro-a);   background:rgba(80,220,160,0.06);  }
-    .tab-btn.macro.active   { color:var(--macro-a);   background:rgba(96,184,255,0.06);  }
-    .tab-btn.metrics.active { color:var(--metrics-a); background:rgba(224,122,255,0.06); }
+    .tab-btn::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:transparent; transition:background .18s; border-radius:2px 2px 0 0; }
+
+    .tab-btn.micro.active   { color:var(--micro-a);   background:#fff; }
+    .tab-btn.macro.active   { color:var(--macro-a);   background:#fff; }
+    .tab-btn.metrics.active { color:var(--metrics-a); background:#fff; }
     .tab-btn.micro.active::after   { background:var(--micro-a);   }
     .tab-btn.macro.active::after   { background:var(--macro-a);   }
     .tab-btn.metrics.active::after { background:var(--metrics-a); }
@@ -87,105 +88,130 @@
     .tab-panel.active { display: block; }
 
     .panel-body {
-      border: 1px solid var(--border); border-top: none; border-radius: 0 0 12px 12px;
-      padding: 30px; margin-bottom: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border); border-top: none;
+      border-radius: 0 0 14px 14px;
+      padding: 32px; margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
     }
-    .micro.panel-body   { background: rgba(80,220,160,0.025); }
-    .macro.panel-body   { background: rgba(96,184,255,0.025); }
-    .metrics.panel-body { background: rgba(224,122,255,0.025); }
 
     /* ── Input ── */
     .input-label {
-      display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px;
+      display: block; font-size: 13px; font-weight: 600;
+      letter-spacing: .01em; margin-bottom: 14px; color: var(--text);
     }
-    .micro   .input-label { color: var(--micro-a); }
-    .macro   .input-label { color: var(--macro-a); }
-    .metrics .input-label { color: var(--metrics-a); }
+    .input-label .exam-name { font-size: 15px; font-weight: 700; display: block; margin-bottom: 3px; }
+    .micro   .input-label .exam-name { color: var(--micro-a);   }
+    .macro   .input-label .exam-name { color: var(--macro-a);   }
+    .metrics .input-label .exam-name { color: var(--metrics-a); }
 
     .input-row { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
 
     input[type=number] {
-      flex:1; min-width:90px; background:rgba(255,255,255,0.05);
-      border:1px solid rgba(255,255,255,0.12); border-radius:8px;
-      padding:13px 16px; font-size:24px; font-family:'Courier New',monospace;
-      color:#fff; outline:none; transition:border-color .2s; -moz-appearance:textfield;
+      flex:1; min-width:90px;
+      background: #f9fafb; border: 2px solid var(--border);
+      border-radius: 10px; padding: 13px 18px;
+      font-size: 26px; font-family: 'Courier New', monospace;
+      color: var(--text); outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      -moz-appearance: textfield;
     }
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
-    input[type=number].err { border-color:#ff6b6b !important; }
-    .micro   input[type=number]:focus { border-color:var(--micro-a);   }
-    .macro   input[type=number]:focus { border-color:var(--macro-a);   }
-    .metrics input[type=number]:focus { border-color:var(--metrics-a); }
+    input[type=number].err { border-color: #f43f5e !important; }
+    .micro   input[type=number]:focus { border-color:var(--micro-a);   box-shadow:0 0 0 3px rgba(18,183,106,0.12);  }
+    .macro   input[type=number]:focus { border-color:var(--macro-a);   box-shadow:0 0 0 3px rgba(46,126,245,0.12);  }
+    .metrics input[type=number]:focus { border-color:var(--metrics-a); box-shadow:0 0 0 3px rgba(147,51,234,0.12); }
 
-    .error-msg { color:#ff6b6b; font-size:12px; margin-top:6px; min-height:16px; }
+    .error-msg { color:#f43f5e; font-size:12px; margin-top:7px; min-height:16px; font-weight:500; }
 
     .btn-submit {
-      border:none; border-radius:8px; padding:13px 26px;
-      font-size:13px; font-family:'Courier New',monospace; font-weight:700;
-      color:#0a0a14; cursor:pointer; letter-spacing:.1em; text-transform:uppercase;
-      transition:transform .15s, box-shadow .15s; white-space:nowrap;
+      border:none; border-radius:10px; padding:14px 28px;
+      font-size:14px; font-family:inherit; font-weight:700;
+      color:#fff; cursor:pointer; letter-spacing:.02em;
+      transition:transform .15s, box-shadow .15s, opacity .15s; white-space:nowrap;
     }
-    .btn-submit:hover { transform:translateY(-2px); }
+    .btn-submit:hover { transform:translateY(-2px); opacity:.93; }
     .btn-submit:active { transform:translateY(0); }
-    .micro   .btn-submit { background:linear-gradient(135deg,var(--micro-a),var(--micro-b)); }
-    .macro   .btn-submit { background:linear-gradient(135deg,var(--macro-a),var(--macro-b)); }
-    .metrics .btn-submit { background:linear-gradient(135deg,var(--metrics-a),var(--metrics-b)); }
-    .micro   .btn-submit:hover { box-shadow:0 6px 20px rgba(80,220,160,0.35); }
-    .macro   .btn-submit:hover { box-shadow:0 6px 20px rgba(96,184,255,0.35); }
-    .metrics .btn-submit:hover { box-shadow:0 6px 20px rgba(224,122,255,0.35); }
+    .micro   .btn-submit { background:linear-gradient(135deg,var(--micro-a),var(--micro-b));   box-shadow:0 4px 14px rgba(18,183,106,0.3);  }
+    .macro   .btn-submit { background:linear-gradient(135deg,var(--macro-a),var(--macro-b));   box-shadow:0 4px 14px rgba(46,126,245,0.3);  }
+    .metrics .btn-submit { background:linear-gradient(135deg,var(--metrics-a),var(--metrics-b)); box-shadow:0 4px 14px rgba(147,51,234,0.3); }
 
-    /* ── Success ── */
-    .success { border-radius:10px; padding:18px 24px; margin-top:18px; text-align:center; display:none; }
-    .success .tick { font-size:22px; margin-bottom:6px; }
-    .success p { font-size:13px; letter-spacing:.06em; }
-    .micro   .success { background:rgba(80,220,160,0.06);  border:1px solid rgba(80,220,160,0.25);  }
-    .macro   .success { background:rgba(96,184,255,0.06);  border:1px solid rgba(96,184,255,0.25);  }
-    .metrics .success { background:rgba(224,122,255,0.06); border:1px solid rgba(224,122,255,0.25); }
-    .micro   .success p { color:var(--micro-a);   }
-    .macro   .success p { color:var(--macro-a);   }
-    .metrics .success p { color:var(--metrics-a); }
+    /* ── Locked state (before submission) ── */
+    .chart-locked {
+      background: var(--surface);
+      border: 2px dashed var(--border);
+      border-radius: 14px; padding: 48px 24px;
+      text-align: center; margin-bottom: 0;
+    }
+    .lock-icon { font-size: 36px; margin-bottom: 14px; opacity: .5; }
+    .lock-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .lock-sub   { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── Success banner ── */
+    .success { border-radius:10px; padding:16px 22px; margin-top:18px; text-align:center; display:none; }
+    .success .tick { font-size:20px; margin-bottom:5px; }
+    .success p { font-size:13px; font-weight:600; }
+    .micro   .success { background:#edfbf3; border:1px solid #a7f0c8; }
+    .macro   .success { background:#eff6ff; border:1px solid #93c5fd; }
+    .metrics .success { background:#faf5ff; border:1px solid #d8b4fe; }
+    .micro   .success p { color:var(--micro-b);   }
+    .macro   .success p { color:var(--macro-b);   }
+    .metrics .success p { color:var(--metrics-b); }
 
     /* ── Stats ── */
     .stats-grid {
       display:none; grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
-      gap:10px; margin-bottom:22px;
+      gap:10px; margin-bottom:20px;
     }
-    .stat-box { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 10px; text-align:center; }
-    .stat-val { font-size:22px; font-weight:900; letter-spacing:-.02em; }
+    .stat-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 10px; text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .stat-val { font-size:22px; font-weight:800; letter-spacing:-.02em; }
     .micro   .stat-val { color:var(--micro-a);   }
     .macro   .stat-val { color:var(--macro-a);   }
     .metrics .stat-val { color:var(--metrics-a); }
-    .stat-lbl { font-size:9px; color:var(--dim); letter-spacing:.15em; text-transform:uppercase; margin-top:4px; }
+    .stat-lbl { font-size:10px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-top:4px; font-weight:600; }
 
     /* ── Chart ── */
-    .chart-wrap { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:26px 20px 18px; }
-    .chart-title { font-size:11px; color:var(--dim); letter-spacing:.2em; text-transform:uppercase; margin-bottom:22px; }
-    .bars { display:flex; align-items:flex-end; gap:4px; height:175px; margin-bottom:8px; }
+    .chart-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px 22px 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .chart-title { font-size:12px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:24px; font-weight:600; }
+    .bars { display:flex; align-items:flex-end; gap:5px; height:180px; margin-bottom:10px; }
     .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; gap:3px; cursor:default; }
     .bar-tip { font-size:10px; font-weight:700; color:transparent; transition:color .15s; min-height:14px; line-height:14px; }
     .bar-col:hover .bar-tip { color:inherit !important; }
-    .bar-rect { width:100%; border-radius:3px 3px 2px 2px; background:#1a1a2e; transition:height .55s cubic-bezier(.34,1.56,.64,1),background .2s,box-shadow .2s; }
-    .x-axis { display:flex; gap:4px; }
-    .x-lbl { flex:1; text-align:center; font-size:8px; color:var(--dim); }
-    .empty-msg { text-align:center; padding:28px 0 8px; color:var(--dim); font-size:13px; letter-spacing:.06em; }
+    .bar-rect { width:100%; border-radius:4px 4px 2px 2px; background:#eef0f7; transition:height .6s cubic-bezier(.34,1.56,.64,1),background .2s,box-shadow .2s; }
+    .bar-col:hover .bar-rect { filter: brightness(1.1); }
+    .x-axis { display:flex; gap:5px; }
+    .x-lbl { flex:1; text-align:center; font-size:9px; color:var(--dim); font-weight:600; }
+    .empty-msg { text-align:center; padding:28px 0 8px; color:var(--dim); font-size:13px; }
 
-    .footer { text-align:center; margin-top:24px; font-size:11px; color:var(--dim); letter-spacing:.1em; }
+    /* ── Footer ── */
+    .footer { text-align:center; margin-top:28px; font-size:11px; color:var(--dim); letter-spacing:.1em; font-weight:600; }
 
-    @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-    .wrap > * { animation:fadeUp .45s ease both; }
-    .wrap > *:nth-child(2){animation-delay:.07s}
-    .wrap > *:nth-child(3){animation-delay:.14s}
-    .wrap > *:nth-child(4){animation-delay:.20s}
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .wrap > * { animation:fadeUp .4s ease both; }
+    .wrap > *:nth-child(2){animation-delay:.06s}
+    .wrap > *:nth-child(3){animation-delay:.12s}
+    .wrap > *:nth-child(4){animation-delay:.18s}
+
+    @keyframes revealChart { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .chart-revealed { animation: revealChart .5s ease both; }
   </style>
 </head>
 <body>
 <div class="wrap">
 
   <header>
-    <div class="badge">Anonymous · Live</div>
-    <h1 class="line1">Class Score</h1>
-    <h1 class="line2">Distribution</h1>
-    <p class="subtitle">Submit your exam scores anonymously — watch the class distributions update live.</p>
+    <div class="badge">🔒 Anonymous · Live</div>
+    <h1>Class Score <span>Distribution</span></h1>
+    <p class="subtitle">Submit your score anonymously for each exam — the distribution unlocks after you submit.</p>
   </header>
 
   <div class="setup-banner" id="setupBanner" style="display:none">
@@ -194,7 +220,7 @@
       <li>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → <strong>Add project</strong> (free Spark plan).</li>
       <li>In the project: <strong>Build → Realtime Database → Create database</strong> → choose <em>Start in test mode</em>.</li>
       <li>Click the ⚙️ gear → <strong>Project settings</strong> → <em>Your apps</em> → <strong>&lt;/&gt; Web</strong> → register app → copy the <code>firebaseConfig</code> object.</li>
-      <li>Open <code>index.html</code> in a text editor and replace the <code>PASTE_YOUR_…</code> placeholders in the <code>&lt;script&gt;</code> section.</li>
+      <li>Open <code>index.html</code> and replace the <code>PASTE_YOUR_…</code> values in the <code>&lt;script&gt;</code> section.</li>
       <li>Push to GitHub Pages — done! 🎉</li>
     </ol>
   </div>
@@ -206,87 +232,125 @@
     <button class="tab-btn metrics"       onclick="switchTab('metrics')">📐 Metrics</button>
   </div>
 
-  <!-- MICRO -->
+  <!-- ══ MICRO ══ -->
   <div class="tab-panel micro active" id="panel-micro">
     <div class="panel-body micro" id="body-micro">
-      <label class="input-label" for="input-micro">Microeconomics — Enter your score (0–100)</label>
+      <label class="input-label" for="input-micro">
+        <span class="exam-name">Microeconomics</span>
+        Enter your score (0 – 100)
+      </label>
       <div class="input-row">
         <div style="flex:1;min-width:90px">
           <input type="number" id="input-micro" min="0" max="100" placeholder="e.g. 87" />
           <div class="error-msg" id="err-micro"></div>
         </div>
-        <button class="btn-submit" id="btn-micro" onclick="submitScore('micro')">Submit →</button>
+        <button class="btn-submit micro" id="btn-micro" onclick="submitScore('micro')">Submit →</button>
       </div>
-      <div class="success micro" id="success-micro"><div class="tick">✓</div><p>Score submitted anonymously.</p></div>
+      <div class="success micro" id="success-micro"><div class="tick">✅</div><p>Score submitted — distribution unlocked!</p></div>
     </div>
-    <div class="stats-grid micro" id="stats-micro">
-      <div class="stat-box micro"><div class="stat-val" id="micro-count">0</div><div class="stat-lbl">Students</div></div>
-      <div class="stat-box micro"><div class="stat-val" id="micro-mean">–</div><div class="stat-lbl">Average</div></div>
-      <div class="stat-box micro"><div class="stat-val" id="micro-median">–</div><div class="stat-lbl">Median</div></div>
-      <div class="stat-box micro"><div class="stat-val" id="micro-min">–</div><div class="stat-lbl">Lowest</div></div>
-      <div class="stat-box micro"><div class="stat-val" id="micro-max">–</div><div class="stat-lbl">Highest</div></div>
+
+    <!-- Locked placeholder -->
+    <div class="chart-locked" id="locked-micro">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-title">Distribution is hidden</div>
+      <div class="lock-sub">Submit your Micro score above<br>to unlock the full class distribution.</div>
     </div>
-    <div class="chart-wrap">
-      <p class="chart-title" id="title-micro">Micro Distribution · waiting for submissions</p>
-      <div class="bars" id="bars-micro"></div>
-      <div class="x-axis" id="xaxis-micro"></div>
-      <div class="empty-msg" id="empty-micro">No scores yet. Be the first!</div>
+
+    <!-- Chart (hidden until submitted) -->
+    <div id="results-micro" style="display:none">
+      <div class="stats-grid micro" id="stats-micro">
+        <div class="stat-box"><div class="stat-val micro" id="micro-count">0</div><div class="stat-lbl">Students</div></div>
+        <div class="stat-box"><div class="stat-val micro" id="micro-mean">–</div><div class="stat-lbl">Average</div></div>
+        <div class="stat-box"><div class="stat-val micro" id="micro-median">–</div><div class="stat-lbl">Median</div></div>
+        <div class="stat-box"><div class="stat-val micro" id="micro-min">–</div><div class="stat-lbl">Lowest</div></div>
+        <div class="stat-box"><div class="stat-val micro" id="micro-max">–</div><div class="stat-lbl">Highest</div></div>
+      </div>
+      <div class="chart-wrap">
+        <p class="chart-title" id="title-micro">Micro Distribution</p>
+        <div class="bars" id="bars-micro"></div>
+        <div class="x-axis" id="xaxis-micro"></div>
+        <div class="empty-msg" id="empty-micro">No scores yet.</div>
+      </div>
     </div>
   </div>
 
-  <!-- MACRO -->
+  <!-- ══ MACRO ══ -->
   <div class="tab-panel macro" id="panel-macro">
     <div class="panel-body macro" id="body-macro">
-      <label class="input-label" for="input-macro">Macroeconomics — Enter your score (0–100)</label>
+      <label class="input-label" for="input-macro">
+        <span class="exam-name">Macroeconomics</span>
+        Enter your score (0 – 100)
+      </label>
       <div class="input-row">
         <div style="flex:1;min-width:90px">
           <input type="number" id="input-macro" min="0" max="100" placeholder="e.g. 74" />
           <div class="error-msg" id="err-macro"></div>
         </div>
-        <button class="btn-submit" id="btn-macro" onclick="submitScore('macro')">Submit →</button>
+        <button class="btn-submit macro" id="btn-macro" onclick="submitScore('macro')">Submit →</button>
       </div>
-      <div class="success macro" id="success-macro"><div class="tick">✓</div><p>Score submitted anonymously.</p></div>
+      <div class="success macro" id="success-macro"><div class="tick">✅</div><p>Score submitted — distribution unlocked!</p></div>
     </div>
-    <div class="stats-grid macro" id="stats-macro">
-      <div class="stat-box macro"><div class="stat-val" id="macro-count">0</div><div class="stat-lbl">Students</div></div>
-      <div class="stat-box macro"><div class="stat-val" id="macro-mean">–</div><div class="stat-lbl">Average</div></div>
-      <div class="stat-box macro"><div class="stat-val" id="macro-median">–</div><div class="stat-lbl">Median</div></div>
-      <div class="stat-box macro"><div class="stat-val" id="macro-min">–</div><div class="stat-lbl">Lowest</div></div>
-      <div class="stat-box macro"><div class="stat-val" id="macro-max">–</div><div class="stat-lbl">Highest</div></div>
+
+    <div class="chart-locked" id="locked-macro">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-title">Distribution is hidden</div>
+      <div class="lock-sub">Submit your Macro score above<br>to unlock the full class distribution.</div>
     </div>
-    <div class="chart-wrap">
-      <p class="chart-title" id="title-macro">Macro Distribution · waiting for submissions</p>
-      <div class="bars" id="bars-macro"></div>
-      <div class="x-axis" id="xaxis-macro"></div>
-      <div class="empty-msg" id="empty-macro">No scores yet. Be the first!</div>
+
+    <div id="results-macro" style="display:none">
+      <div class="stats-grid macro" id="stats-macro">
+        <div class="stat-box"><div class="stat-val macro" id="macro-count">0</div><div class="stat-lbl">Students</div></div>
+        <div class="stat-box"><div class="stat-val macro" id="macro-mean">–</div><div class="stat-lbl">Average</div></div>
+        <div class="stat-box"><div class="stat-val macro" id="macro-median">–</div><div class="stat-lbl">Median</div></div>
+        <div class="stat-box"><div class="stat-val macro" id="macro-min">–</div><div class="stat-lbl">Lowest</div></div>
+        <div class="stat-box"><div class="stat-val macro" id="macro-max">–</div><div class="stat-lbl">Highest</div></div>
+      </div>
+      <div class="chart-wrap">
+        <p class="chart-title" id="title-macro">Macro Distribution</p>
+        <div class="bars" id="bars-macro"></div>
+        <div class="x-axis" id="xaxis-macro"></div>
+        <div class="empty-msg" id="empty-macro">No scores yet.</div>
+      </div>
     </div>
   </div>
 
-  <!-- METRICS -->
+  <!-- ══ METRICS ══ -->
   <div class="tab-panel metrics" id="panel-metrics">
     <div class="panel-body metrics" id="body-metrics">
-      <label class="input-label" for="input-metrics">Econometrics — Enter your score (0–100)</label>
+      <label class="input-label" for="input-metrics">
+        <span class="exam-name">Econometrics</span>
+        Enter your score (0 – 100)
+      </label>
       <div class="input-row">
         <div style="flex:1;min-width:90px">
           <input type="number" id="input-metrics" min="0" max="100" placeholder="e.g. 91" />
           <div class="error-msg" id="err-metrics"></div>
         </div>
-        <button class="btn-submit" id="btn-metrics" onclick="submitScore('metrics')">Submit →</button>
+        <button class="btn-submit metrics" id="btn-metrics" onclick="submitScore('metrics')">Submit →</button>
       </div>
-      <div class="success metrics" id="success-metrics"><div class="tick">✓</div><p>Score submitted anonymously.</p></div>
+      <div class="success metrics" id="success-metrics"><div class="tick">✅</div><p>Score submitted — distribution unlocked!</p></div>
     </div>
-    <div class="stats-grid metrics" id="stats-metrics">
-      <div class="stat-box metrics"><div class="stat-val" id="metrics-count">0</div><div class="stat-lbl">Students</div></div>
-      <div class="stat-box metrics"><div class="stat-val" id="metrics-mean">–</div><div class="stat-lbl">Average</div></div>
-      <div class="stat-box metrics"><div class="stat-val" id="metrics-median">–</div><div class="stat-lbl">Median</div></div>
-      <div class="stat-box metrics"><div class="stat-val" id="metrics-min">–</div><div class="stat-lbl">Lowest</div></div>
-      <div class="stat-box metrics"><div class="stat-val" id="metrics-max">–</div><div class="stat-lbl">Highest</div></div>
+
+    <div class="chart-locked" id="locked-metrics">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-title">Distribution is hidden</div>
+      <div class="lock-sub">Submit your Metrics score above<br>to unlock the full class distribution.</div>
     </div>
-    <div class="chart-wrap">
-      <p class="chart-title" id="title-metrics">Metrics Distribution · waiting for submissions</p>
-      <div class="bars" id="bars-metrics"></div>
-      <div class="x-axis" id="xaxis-metrics"></div>
-      <div class="empty-msg" id="empty-metrics">No scores yet. Be the first!</div>
+
+    <div id="results-metrics" style="display:none">
+      <div class="stats-grid metrics" id="stats-metrics">
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-count">0</div><div class="stat-lbl">Students</div></div>
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-mean">–</div><div class="stat-lbl">Average</div></div>
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-median">–</div><div class="stat-lbl">Median</div></div>
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-min">–</div><div class="stat-lbl">Lowest</div></div>
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-max">–</div><div class="stat-lbl">Highest</div></div>
+      </div>
+      <div class="chart-wrap">
+        <p class="chart-title" id="title-metrics">Metrics Distribution</p>
+        <div class="bars" id="bars-metrics"></div>
+        <div class="x-axis" id="xaxis-metrics"></div>
+        <div class="empty-msg" id="empty-metrics">No scores yet.</div>
+      </div>
     </div>
   </div>
 
@@ -313,16 +377,16 @@ const firebaseConfig = {
 
 const EXAMS = ['micro','macro','metrics'];
 const ACCENT = {
-  micro:   { fill: t => `hsl(${160+t*30},75%,${40+t*15}%)`,  tip:'#50dcA0' },
-  macro:   { fill: t => `hsl(${210+t*20},80%,${40+t*15}%)`,  tip:'#60b8ff' },
-  metrics: { fill: t => `hsl(${280+t*20},70%,${42+t*13}%)`,  tip:'#e07aff' },
+  micro:   { fill: t => `hsl(${145+t*20},${60+t*20}%,${48-t*10}%)`, tip:'#12b76a' },
+  macro:   { fill: t => `hsl(${215+t*15},${70+t*20}%,${50-t*12}%)`, tip:'#2e7ef5' },
+  metrics: { fill: t => `hsl(${270+t*15},${60+t*20}%,${52-t*12}%)`, tip:'#9333ea' },
 };
 const NAMES = { micro:'Micro', macro:'Macro', metrics:'Metrics' };
 
 const state = {};
-EXAMS.forEach(e => state[e] = { scores:[], barsReady:false });
+EXAMS.forEach(e => state[e] = { scores:[], barsReady:false, submitted:false });
 
-// ── Firebase init ──────────────────────────────────────────────────────────
+// ── Firebase ──────────────────────────────────────────────────────────────
 const isConfigured = !firebaseConfig.apiKey.startsWith("PASTE_");
 let db;
 
@@ -333,12 +397,12 @@ if (isConfigured) {
     db.ref(`scores/${exam}`).on("value", snap => {
       const data = snap.val();
       state[exam].scores = data ? Object.values(data) : [];
-      renderExam(exam);
+      // Only re-render chart if already submitted
+      if (state[exam].submitted) renderChart(exam);
     });
   });
 } else {
   document.getElementById("setupBanner").style.display = "block";
-  EXAMS.forEach(exam => renderExam(exam));
 }
 
 // ── Tabs ──────────────────────────────────────────────────────────────────
@@ -347,7 +411,9 @@ function switchTab(name) {
     document.getElementById(`panel-${e}`).classList.toggle('active', e===name);
     document.querySelector(`.tab-btn.${e}`).classList.toggle('active', e===name);
   });
-  setTimeout(() => document.getElementById(`input-${name}`).focus(), 50);
+  if (!state[name].submitted) {
+    setTimeout(() => document.getElementById(`input-${name}`).focus(), 50);
+  }
 }
 
 // ── Submit ────────────────────────────────────────────────────────────────
@@ -366,14 +432,27 @@ function submitScore(exam) {
     db.ref(`scores/${exam}`).push(val);
   } else {
     state[exam].scores.push(val);
-    renderExam(exam);
   }
 
-  // Hide form, show success
+  state[exam].submitted = true;
+
+  // Hide input form
   input.parentElement.style.display = 'none';
   document.getElementById(`btn-${exam}`).style.display = 'none';
   document.querySelector(`#body-${exam} label`).style.display = 'none';
   document.getElementById(`success-${exam}`).style.display = 'block';
+
+  // Swap lock screen → chart
+  document.getElementById(`locked-${exam}`).style.display = 'none';
+  const resultsEl = document.getElementById(`results-${exam}`);
+  resultsEl.style.display = 'block';
+  resultsEl.classList.add('chart-revealed');
+
+  // Show stats grid
+  document.getElementById(`stats-${exam}`).style.display = 'grid';
+
+  // Render chart
+  renderChart(exam);
 }
 
 EXAMS.forEach(exam => {
@@ -382,7 +461,7 @@ EXAMS.forEach(exam => {
   });
 });
 
-// ── Data helpers ──────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────
 function buildBins(scores) {
   return Array.from({length:11}, (_,i) => {
     const low = i*10, high = i===10 ? 100 : low+9;
@@ -403,14 +482,13 @@ function calcStats(arr) {
 }
 
 // ── Render ────────────────────────────────────────────────────────────────
-function renderExam(exam) {
+function renderChart(exam) {
   const scores   = state[exam].scores;
   const bins     = buildBins(scores);
   const stats    = calcStats(scores);
   const maxCount = Math.max(...bins.map(b=>b.count), 1);
 
   if (stats) {
-    document.getElementById(`stats-${exam}`).style.display = 'grid';
     document.getElementById(`${exam}-count`).textContent  = stats.count;
     document.getElementById(`${exam}-mean`).textContent   = stats.mean;
     document.getElementById(`${exam}-median`).textContent = stats.median;
@@ -419,9 +497,7 @@ function renderExam(exam) {
   }
 
   document.getElementById(`title-${exam}`).textContent =
-    scores.length === 0
-      ? `${NAMES[exam]} Distribution · waiting for submissions`
-      : `${NAMES[exam]} Distribution · ${scores.length} student${scores.length!==1?'s':''}`;
+    `${NAMES[exam]} Distribution · ${scores.length} student${scores.length!==1?'s':''}`;
 
   document.getElementById(`empty-${exam}`).style.display = scores.length===0 ? 'block' : 'none';
 
@@ -448,21 +524,17 @@ function renderExam(exam) {
 }
 
 function updateBars(exam, bins, maxCount) {
-  const maxPx = 148;
+  const maxPx = 150;
   bins.forEach((bin, i) => {
     const bar = document.getElementById(`${exam}-bar-${i}`);
     const tip = document.getElementById(`${exam}-tip-${i}`);
     if (!bar) return;
     const h = bin.count > 0 ? Math.max((bin.count/maxCount)*maxPx, 5) : 0;
     bar.style.height = `${h}px`;
-    bar.style.background = bin.count===0 ? '#1a1a2e' : ACCENT[exam].fill(bin.count/maxCount);
+    bar.style.background = bin.count===0 ? '#eef0f7' : ACCENT[exam].fill(bin.count/maxCount);
     tip.textContent = bin.count > 0 ? bin.count : '';
   });
 }
-</script>
-</body>
-</html>
-
 </script>
 </body>
 </html>
