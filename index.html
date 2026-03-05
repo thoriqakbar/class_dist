@@ -391,12 +391,24 @@ EXAMS.forEach(e => state[e] = { scores:[], barsReady:false, submitted:false });
 const isConfigured = !firebaseConfig.apiKey.startsWith("PASTE_");
 let db;
 
-// If user already submitted before, restore the results view
-if (hasSubmitted()) {
-  document.getElementById("inputCard").style.display = "none";
-  document.getElementById("successBanner").style.display = "block";
-  showResults();
-}
+// Restore previously submitted exams from localStorage
+EXAMS.forEach(exam => {
+  const key = `classScore_${exam}_submitted`;
+  if (localStorage.getItem(key) === 'true') {
+    state[exam].submitted = true;
+    // Hide input, show success
+    const input = document.getElementById(`input-${exam}`);
+    input.parentElement.style.display = 'none';
+    document.getElementById(`btn-${exam}`).style.display = 'none';
+    document.querySelector(`#body-${exam} label`).style.display = 'none';
+    document.getElementById(`success-${exam}`).style.display = 'block';
+    // Swap lock → chart
+    document.getElementById(`locked-${exam}`).style.display = 'none';
+    const resultsEl = document.getElementById(`results-${exam}`);
+    resultsEl.style.display = 'block';
+    document.getElementById(`stats-${exam}`).style.display = 'grid';
+  }
+});
 
 if (isConfigured) {
   firebase.initializeApp(firebaseConfig);
@@ -443,6 +455,7 @@ function submitScore(exam) {
   }
 
   state[exam].submitted = true;
+  localStorage.setItem(`classScore_${exam}_submitted`, 'true');
 
   // Hide input form
   input.parentElement.style.display = 'none';
