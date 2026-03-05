@@ -5,341 +5,365 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Class Score Distribution</title>
   <style>
-    /* ── Reset & base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:      #faf7f5;
-      --surface: #ffffff;
-      --border:  #e8e0dc;
-      --accent:  #b07da0;
-      --accent2: #9a6b8c;
-      --text:    #4a3f4a;
-      --muted:   #9a8f9a;
-      --dim:     #c4b8c4;
+      --bg:        #f5f6fa;
+      --surface:   #ffffff;
+      --border:    #e2e4ed;
+      --text:      #1a1a2e;
+      --muted:     #7c7f96;
+      --dim:       #b0b3c6;
+      --micro-a:   #12b76a; --micro-b:   #0a8f52;
+      --macro-a:   #2e7ef5; --macro-b:   #1a5fd4;
+      --metrics-a: #9333ea; --metrics-b: #6f1fbb;
     }
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #faf7f5 0%, #f3eef8 50%, #fdf5f0 100%);
-      font-family: 'Courier New', monospace;
+      background: var(--bg);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       color: var(--text);
       overflow-x: hidden;
     }
 
-    /* ambient glow */
-    body::after {
-      content: '';
-      position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
-      width: 600px; height: 300px; border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(176,125,160,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    /* ── Layout ── */
-    .wrap {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 48px 24px 80px;
-      position: relative; z-index: 1;
-    }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 52px 24px 80px; }
 
     /* ── Header ── */
+    header { text-align: center; margin-bottom: 44px; }
+
     .badge {
       display: inline-block;
-      background: rgba(176,125,160,0.1);
-      border: 1px solid rgba(176,125,160,0.25);
-      border-radius: 4px;
-      padding: 4px 14px;
-      font-size: 11px;
-      letter-spacing: .2em;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-bottom: 16px;
+      background: #edfbf3; border: 1px solid #a7f0c8;
+      border-radius: 20px; padding: 5px 16px;
+      font-size: 11px; letter-spacing: .15em; font-weight: 600;
+      color: var(--micro-a); text-transform: uppercase; margin-bottom: 20px;
     }
 
     h1 {
-      font-size: clamp(30px, 7vw, 54px);
-      font-weight: 900;
-      letter-spacing: -.03em;
-      line-height: 1.1;
-      margin-bottom: 4px;
+      font-size: clamp(30px, 6vw, 52px); font-weight: 800;
+      letter-spacing: -.03em; line-height: 1.1; color: var(--text);
+      margin-bottom: 10px;
     }
-    h1.line1 {
-      background: linear-gradient(135deg, #5a4a5a 0%, #b07da0 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    h1 span { color: var(--micro-a); }
+    .subtitle { color: var(--muted); font-size: 15px; line-height: 1.6; max-width: 500px; margin: 0 auto; }
+
+    /* ── Setup banner ── */
+    .setup-banner {
+      background: #fffbeb; border: 1px solid #fcd34d;
+      border-radius: 12px; padding: 18px 22px; margin-bottom: 28px;
+      font-size: 13px; color: #92400e; line-height: 1.7;
     }
-    h1.line2 {
-      background: linear-gradient(135deg, #b07da0 0%, #d4a0c0 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
+    .setup-banner strong { color: #78350f; }
+    .setup-banner code { background: rgba(0,0,0,0.06); padding:2px 7px; border-radius:4px; font-family:'Courier New',monospace; font-size:12px; }
+    .setup-banner ol { padding-left: 20px; margin-top: 10px; }
+    .setup-banner li { margin-bottom: 6px; }
+    .setup-banner a { color: #92400e; }
+
+    /* ── Tabs ── */
+    .tabs {
+      display: flex; border-radius: 14px 14px 0 0; overflow: hidden;
+      border: 1px solid var(--border); border-bottom: none;
+      background: #f0f1f7;
     }
+    .tab-btn {
+      flex: 1; padding: 15px 12px; background: transparent;
+      border: none; border-right: 1px solid var(--border);
+      font-family: inherit; font-size: 13px; font-weight: 600;
+      letter-spacing: .04em; color: var(--muted);
+      cursor: pointer; transition: background .18s, color .18s; position: relative;
+    }
+    .tab-btn:last-child { border-right: none; }
+    .tab-btn::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:transparent; transition:background .18s; border-radius:2px 2px 0 0; }
 
-    .subtitle { color: var(--muted); font-size: 14px; letter-spacing: .04em; }
+    .tab-btn.micro.active   { color:var(--micro-a);   background:#fff; }
+    .tab-btn.macro.active   { color:var(--macro-a);   background:#fff; }
+    .tab-btn.metrics.active { color:var(--metrics-a); background:#fff; }
+    .tab-btn.micro.active::after   { background:var(--micro-a);   }
+    .tab-btn.macro.active::after   { background:var(--macro-a);   }
+    .tab-btn.metrics.active::after { background:var(--metrics-a); }
 
-    header { text-align: center; margin-bottom: 48px; }
+    /* ── Panels ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
 
-    /* ── Card ── */
-    .card {
+    .panel-body {
       background: var(--surface);
-      border: 1px solid rgba(176,125,160,0.2);
-      border-radius: 12px;
-      padding: 32px;
-      margin-bottom: 32px;
-      box-shadow: 0 2px 12px rgba(176,125,160,0.06);
-    }
-    .card-label {
-      font-size: 11px; color: var(--muted);
-      letter-spacing: .1em; text-transform: uppercase;
-      margin-bottom: 18px;
+      border: 1px solid var(--border); border-top: none;
+      border-radius: 0 0 14px 14px;
+      padding: 32px; margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
     }
 
-    /* ── Input row ── */
+    /* ── Input ── */
+    .input-label {
+      display: block; font-size: 13px; font-weight: 600;
+      letter-spacing: .01em; margin-bottom: 14px; color: var(--text);
+    }
+    .input-label .exam-name { font-size: 15px; font-weight: 700; display: block; margin-bottom: 3px; }
+    .micro   .input-label .exam-name { color: var(--micro-a);   }
+    .macro   .input-label .exam-name { color: var(--macro-a);   }
+    .metrics .input-label .exam-name { color: var(--metrics-a); }
+
     .input-row { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
 
     input[type=number] {
-      flex: 1; min-width: 100px;
-      background: #faf7f5;
-      border: 1px solid rgba(176,125,160,0.3);
-      border-radius: 8px;
-      padding: 14px 18px;
-      font-size: 26px;
-      font-family: 'Courier New', monospace;
-      color: var(--text);
-      outline: none;
-      transition: border-color .2s;
+      flex:1; min-width:90px;
+      background: #f9fafb; border: 2px solid var(--border);
+      border-radius: 10px; padding: 13px 18px;
+      font-size: 26px; font-family: 'Courier New', monospace;
+      color: var(--text); outline: none;
+      transition: border-color .2s, box-shadow .2s;
       -moz-appearance: textfield;
     }
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
-    input[type=number].err { border-color: #e07070; }
-    input[type=number]:focus { border-color: var(--accent); }
+    input[type=number].err { border-color: #f43f5e !important; }
+    .micro   input[type=number]:focus { border-color:var(--micro-a);   box-shadow:0 0 0 3px rgba(18,183,106,0.12);  }
+    .macro   input[type=number]:focus { border-color:var(--macro-a);   box-shadow:0 0 0 3px rgba(46,126,245,0.12);  }
+    .metrics input[type=number]:focus { border-color:var(--metrics-a); box-shadow:0 0 0 3px rgba(147,51,234,0.12); }
 
-    .error-msg { color: #d06060; font-size: 12px; margin-top: 6px; min-height: 16px; }
+    .error-msg { color:#f43f5e; font-size:12px; margin-top:7px; min-height:16px; font-weight:500; }
 
     .btn-submit {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none; border-radius: 8px;
-      padding: 14px 28px;
-      font-size: 14px; font-family: 'Courier New', monospace;
-      font-weight: 700; color: #fff;
-      cursor: pointer; letter-spacing: .1em;
-      text-transform: uppercase;
-      transition: transform .15s, box-shadow .15s;
-      white-space: nowrap;
+      border:none; border-radius:10px; padding:14px 28px;
+      font-size:14px; font-family:inherit; font-weight:700;
+      color:#fff; cursor:pointer; letter-spacing:.02em;
+      transition:transform .15s, box-shadow .15s, opacity .15s; white-space:nowrap;
     }
-    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(176,125,160,0.25); }
-    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:hover { transform:translateY(-2px); opacity:.93; }
+    .btn-submit:active { transform:translateY(0); }
+    .micro   .btn-submit { background:linear-gradient(135deg,var(--micro-a),var(--micro-b));   box-shadow:0 4px 14px rgba(18,183,106,0.3);  }
+    .macro   .btn-submit { background:linear-gradient(135deg,var(--macro-a),var(--macro-b));   box-shadow:0 4px 14px rgba(46,126,245,0.3);  }
+    .metrics .btn-submit { background:linear-gradient(135deg,var(--metrics-a),var(--metrics-b)); box-shadow:0 4px 14px rgba(147,51,234,0.3); }
+
+    /* ── Locked state (before submission) ── */
+    .chart-locked {
+      background: var(--surface);
+      border: 2px dashed var(--border);
+      border-radius: 14px; padding: 48px 24px;
+      text-align: center; margin-bottom: 0;
+    }
+    .lock-icon { font-size: 36px; margin-bottom: 14px; opacity: .5; }
+    .lock-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .lock-sub   { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
     /* ── Success banner ── */
-    .success {
-      background: rgba(176,125,160,0.06);
-      border: 1px solid rgba(176,125,160,0.25);
-      border-radius: 12px;
-      padding: 24px 32px;
-      margin-bottom: 32px;
-      text-align: center;
-    }
-    .success .tick { font-size: 28px; margin-bottom: 8px; color: var(--accent); }
-    .success p { color: var(--accent); font-size: 14px; letter-spacing: .07em; }
-
-    /* ── Setup banner ── */
-    .setup-banner {
-      background: rgba(220,170,80,0.08);
-      border: 1px solid rgba(220,170,80,0.3);
-      border-radius: 12px;
-      padding: 20px 24px;
-      margin-bottom: 32px;
-      font-size: 13px;
-      color: #a07030;
-      line-height: 1.7;
-    }
-    .setup-banner strong { color: #886020; }
-    .setup-banner code {
-      background: rgba(0,0,0,0.05);
-      padding: 2px 7px; border-radius: 4px;
-      font-family: 'Courier New', monospace;
-      font-size: 12px; color: #886020;
-    }
-    .setup-banner ol { padding-left: 20px; margin-top: 10px; }
-    .setup-banner li { margin-bottom: 6px; }
-    .setup-banner a { color: #886020; }
-
-    /* ── Gate message ── */
-    .gate-msg {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 40px 32px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-      letter-spacing: .04em;
-      line-height: 1.7;
-      box-shadow: 0 2px 12px rgba(176,125,160,0.06);
-    }
-    .gate-msg .lock { font-size: 32px; margin-bottom: 12px; }
+    .success { border-radius:10px; padding:16px 22px; margin-top:18px; text-align:center; display:none; }
+    .success .tick { font-size:20px; margin-bottom:5px; }
+    .success p { font-size:13px; font-weight:600; }
+    .micro   .success { background:#edfbf3; border:1px solid #a7f0c8; }
+    .macro   .success { background:#eff6ff; border:1px solid #93c5fd; }
+    .metrics .success { background:#faf5ff; border:1px solid #d8b4fe; }
+    .micro   .success p { color:var(--micro-b);   }
+    .macro   .success p { color:var(--macro-b);   }
+    .metrics .success p { color:var(--metrics-b); }
 
     /* ── Stats ── */
     .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-      gap: 12px;
-      margin-bottom: 32px;
+      display:none; grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
+      gap:10px; margin-bottom:20px;
     }
     .stat-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px 12px;
-      text-align: center;
-      box-shadow: 0 1px 6px rgba(176,125,160,0.04);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 10px; text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
     }
-    .stat-val { font-size: 24px; font-weight: 900; color: var(--accent); letter-spacing: -.02em; }
-    .stat-lbl { font-size: 10px; color: var(--dim); letter-spacing: .15em; text-transform: uppercase; margin-top: 4px; }
+    .stat-val { font-size:22px; font-weight:800; letter-spacing:-.02em; }
+    .micro   .stat-val { color:var(--micro-a);   }
+    .macro   .stat-val { color:var(--macro-a);   }
+    .metrics .stat-val { color:var(--metrics-a); }
+    .stat-lbl { font-size:10px; color:var(--dim); letter-spacing:.1em; text-transform:uppercase; margin-top:4px; font-weight:600; }
 
     /* ── Chart ── */
     .chart-wrap {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 32px 24px 20px;
-      box-shadow: 0 2px 12px rgba(176,125,160,0.06);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px 22px 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
     }
-    .chart-title {
-      font-size: 11px; color: var(--dim);
-      letter-spacing: .2em; text-transform: uppercase;
-      margin-bottom: 28px;
-    }
-
-    .bars {
-      display: flex;
-      align-items: flex-end;
-      gap: 5px;
-      height: 200px;
-      margin-bottom: 10px;
-    }
-    .bar-col {
-      flex: 1;
-      display: flex; flex-direction: column; align-items: center;
-      height: 100%; justify-content: flex-end;
-      gap: 4px; cursor: default;
-    }
-    .bar-tip {
-      font-size: 11px; font-weight: 700;
-      color: transparent; transition: color .15s;
-      min-height: 16px; line-height: 16px;
-    }
-    .bar-col:hover .bar-tip { color: var(--accent); }
-    .bar-rect {
-      width: 100%;
-      border-radius: 4px 4px 2px 2px;
-      background: #f0e8f0;
-      transition: height .55s cubic-bezier(.34,1.56,.64,1), background .2s, box-shadow .2s;
-    }
-    .bar-col:hover .bar-rect { box-shadow: 0 0 14px rgba(176,125,160,0.2); }
-
-    .x-axis { display: flex; gap: 5px; }
-    .x-lbl { flex: 1; text-align: center; font-size: 9px; color: var(--dim); }
-
-    .empty-msg {
-      text-align: center; padding: 40px 0 10px;
-      color: var(--dim); font-size: 13px; letter-spacing: .06em;
-    }
+    .chart-title { font-size:12px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:24px; font-weight:600; }
+    .bars { display:flex; align-items:flex-end; gap:5px; height:180px; margin-bottom:10px; }
+    .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; gap:3px; cursor:default; }
+    .bar-tip { font-size:10px; font-weight:700; color:transparent; transition:color .15s; min-height:14px; line-height:14px; }
+    .bar-col:hover .bar-tip { color:inherit !important; }
+    .bar-rect { width:100%; border-radius:4px 4px 2px 2px; background:#eef0f7; transition:height .6s cubic-bezier(.34,1.56,.64,1),background .2s,box-shadow .2s; }
+    .bar-col:hover .bar-rect { filter: brightness(1.1); }
+    .x-axis { display:flex; gap:5px; }
+    .x-lbl { flex:1; text-align:center; font-size:9px; color:var(--dim); font-weight:600; }
+    .empty-msg { text-align:center; padding:28px 0 8px; color:var(--dim); font-size:13px; }
 
     /* ── Footer ── */
-    .footer {
-      text-align: center; margin-top: 24px;
-      font-size: 11px; color: var(--dim); letter-spacing: .1em;
-    }
+    .footer { text-align:center; margin-top:28px; font-size:11px; color:var(--dim); letter-spacing:.1em; font-weight:600; }
 
-    /* ── Animations ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .wrap > * { animation: fadeUp .5s ease both; }
-    .wrap > *:nth-child(2) { animation-delay: .08s; }
-    .wrap > *:nth-child(3) { animation-delay: .16s; }
-    .wrap > *:nth-child(4) { animation-delay: .24s; }
-    .wrap > *:nth-child(5) { animation-delay: .30s; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .wrap > * { animation:fadeUp .4s ease both; }
+    .wrap > *:nth-child(2){animation-delay:.06s}
+    .wrap > *:nth-child(3){animation-delay:.12s}
+    .wrap > *:nth-child(4){animation-delay:.18s}
+
+    @keyframes revealChart { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .chart-revealed { animation: revealChart .5s ease both; }
   </style>
 </head>
 <body>
 <div class="wrap">
+
   <header>
-    <div class="badge">Anonymous · Live</div>
-    <h1 class="line1">Class Score</h1>
-    <h1 class="line2">Distribution</h1>
-    <p class="subtitle">Submit your score anonymously. Watch the class distribution live.</p>
+    <div class="badge">🔒 Anonymous · Live</div>
+    <h1>Class Score <span>Distribution</span></h1>
+    <p class="subtitle">Submit your score anonymously for each exam — the distribution unlocks after you submit.</p>
   </header>
 
-  <!-- Setup instructions shown when Firebase is not configured -->
   <div class="setup-banner" id="setupBanner" style="display:none">
     <strong>One-time Firebase setup required</strong>
     <ol>
       <li>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → <strong>Add project</strong> (free Spark plan).</li>
       <li>In the project: <strong>Build → Realtime Database → Create database</strong> → choose <em>Start in test mode</em>.</li>
-      <li>Click the gear → <strong>Project settings</strong> → scroll to <em>Your apps</em> → <strong>&lt;/&gt; Web</strong> → register app → copy the <code>firebaseConfig</code> object.</li>
-      <li>Open <code>index.html</code> in a text editor and replace the <code>PASTE_YOUR_…</code> placeholders near the top of the <code>&lt;script&gt;</code> section.</li>
-      <li>Push to GitHub Pages — done!</li>
+      <li>Click the ⚙️ gear → <strong>Project settings</strong> → <em>Your apps</em> → <strong>&lt;/&gt; Web</strong> → register app → copy the <code>firebaseConfig</code> object.</li>
+      <li>Open <code>index.html</code> and replace the <code>PASTE_YOUR_…</code> values in the <code>&lt;script&gt;</code> section.</li>
+      <li>Push to GitHub Pages — done! 🎉</li>
     </ol>
   </div>
 
-  <!-- Input card -->
-  <div class="card" id="inputCard">
-    <p class="card-label">Enter your score (0 – 100)</p>
-    <div class="input-row">
-      <div style="flex:1;min-width:100px">
-        <input type="number" id="scoreInput" min="0" max="100" placeholder="e.g. 87" autofocus />
-        <div class="error-msg" id="errMsg"></div>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn micro active"  onclick="switchTab('micro')">📈 Micro</button>
+    <button class="tab-btn macro"         onclick="switchTab('macro')">📊 Macro</button>
+    <button class="tab-btn metrics"       onclick="switchTab('metrics')">📐 Metrics</button>
+  </div>
+
+  <!-- ══ MICRO ══ -->
+  <div class="tab-panel micro active" id="panel-micro">
+    <div class="panel-body micro" id="body-micro">
+      <label class="input-label" for="input-micro">
+        <span class="exam-name">Microeconomics</span>
+        Enter your score (0 – 100)
+      </label>
+      <div class="input-row">
+        <div style="flex:1;min-width:90px">
+          <input type="number" id="input-micro" min="0" max="100" placeholder="e.g. 87" />
+          <div class="error-msg" id="err-micro"></div>
+        </div>
+        <button class="btn-submit micro" id="btn-micro" onclick="submitScore('micro')">Submit →</button>
       </div>
-      <button class="btn-submit" id="submitBtn" onclick="submitScore()">Submit →</button>
+      <div class="success micro" id="success-micro"><div class="tick">✅</div><p>Score submitted — distribution unlocked!</p></div>
+    </div>
+
+    <!-- Locked placeholder -->
+    <div class="chart-locked" id="locked-micro">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-title">Distribution is hidden</div>
+      <div class="lock-sub">Submit your Micro score above<br>to unlock the full class distribution.</div>
+    </div>
+
+    <!-- Chart (hidden until submitted) -->
+    <div id="results-micro" style="display:none">
+      <div class="stats-grid micro" id="stats-micro">
+        <div class="stat-box"><div class="stat-val micro" id="micro-count">0</div><div class="stat-lbl">Students</div></div>
+        <div class="stat-box"><div class="stat-val micro" id="micro-mean">–</div><div class="stat-lbl">Average</div></div>
+        <div class="stat-box"><div class="stat-val micro" id="micro-median">–</div><div class="stat-lbl">Median</div></div>
+        <div class="stat-box"><div class="stat-val micro" id="micro-min">–</div><div class="stat-lbl">Lowest</div></div>
+        <div class="stat-box"><div class="stat-val micro" id="micro-max">–</div><div class="stat-lbl">Highest</div></div>
+      </div>
+      <div class="chart-wrap">
+        <p class="chart-title" id="title-micro">Micro Distribution</p>
+        <div class="bars" id="bars-micro"></div>
+        <div class="x-axis" id="xaxis-micro"></div>
+        <div class="empty-msg" id="empty-micro">No scores yet.</div>
+      </div>
     </div>
   </div>
 
-  <!-- Success banner (hidden until submitted) -->
-  <div class="success" id="successBanner" style="display:none">
-    <div class="tick">✓</div>
-    <p>Score submitted anonymously. Distribution updates live below.</p>
-  </div>
-
-  <!-- Gate message (shown when user hasn't submitted yet) -->
-  <div class="gate-msg" id="gateMsg">
-    <div class="lock">🔒</div>
-    <p>Submit your score above to unlock the class distribution.</p>
-  </div>
-
-  <!-- Results section (hidden until user submits) -->
-  <div id="resultsSection" style="display:none">
-    <!-- Stats -->
-    <div class="stats-grid" id="statsGrid" style="display:none">
-      <div class="stat-box"><div class="stat-val" id="sCount">0</div><div class="stat-lbl">Submissions</div></div>
-      <div class="stat-box"><div class="stat-val" id="sMean">–</div><div class="stat-lbl">Average</div></div>
-      <div class="stat-box"><div class="stat-val" id="sMedian">–</div><div class="stat-lbl">Median</div></div>
-      <div class="stat-box"><div class="stat-val" id="sMin">–</div><div class="stat-lbl">Lowest</div></div>
-      <div class="stat-box"><div class="stat-val" id="sMax">–</div><div class="stat-lbl">Highest</div></div>
+  <!-- ══ MACRO ══ -->
+  <div class="tab-panel macro" id="panel-macro">
+    <div class="panel-body macro" id="body-macro">
+      <label class="input-label" for="input-macro">
+        <span class="exam-name">Macroeconomics</span>
+        Enter your score (0 – 100)
+      </label>
+      <div class="input-row">
+        <div style="flex:1;min-width:90px">
+          <input type="number" id="input-macro" min="0" max="100" placeholder="e.g. 74" />
+          <div class="error-msg" id="err-macro"></div>
+        </div>
+        <button class="btn-submit macro" id="btn-macro" onclick="submitScore('macro')">Submit →</button>
+      </div>
+      <div class="success macro" id="success-macro"><div class="tick">✅</div><p>Score submitted — distribution unlocked!</p></div>
     </div>
 
-    <!-- Histogram -->
-    <div class="chart-wrap">
-      <p class="chart-title" id="chartTitle">Score Distribution · waiting for submissions</p>
-      <div class="bars" id="barsContainer"></div>
-      <div class="x-axis" id="xAxis"></div>
-      <div class="empty-msg" id="emptyMsg">No scores yet. Be the first!</div>
+    <div class="chart-locked" id="locked-macro">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-title">Distribution is hidden</div>
+      <div class="lock-sub">Submit your Macro score above<br>to unlock the full class distribution.</div>
     </div>
+
+    <div id="results-macro" style="display:none">
+      <div class="stats-grid macro" id="stats-macro">
+        <div class="stat-box"><div class="stat-val macro" id="macro-count">0</div><div class="stat-lbl">Students</div></div>
+        <div class="stat-box"><div class="stat-val macro" id="macro-mean">–</div><div class="stat-lbl">Average</div></div>
+        <div class="stat-box"><div class="stat-val macro" id="macro-median">–</div><div class="stat-lbl">Median</div></div>
+        <div class="stat-box"><div class="stat-val macro" id="macro-min">–</div><div class="stat-lbl">Lowest</div></div>
+        <div class="stat-box"><div class="stat-val macro" id="macro-max">–</div><div class="stat-lbl">Highest</div></div>
+      </div>
+      <div class="chart-wrap">
+        <p class="chart-title" id="title-macro">Macro Distribution</p>
+        <div class="bars" id="bars-macro"></div>
+        <div class="x-axis" id="xaxis-macro"></div>
+        <div class="empty-msg" id="empty-macro">No scores yet.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ METRICS ══ -->
+  <div class="tab-panel metrics" id="panel-metrics">
+    <div class="panel-body metrics" id="body-metrics">
+      <label class="input-label" for="input-metrics">
+        <span class="exam-name">Econometrics</span>
+        Enter your score (0 – 100)
+      </label>
+      <div class="input-row">
+        <div style="flex:1;min-width:90px">
+          <input type="number" id="input-metrics" min="0" max="100" placeholder="e.g. 91" />
+          <div class="error-msg" id="err-metrics"></div>
+        </div>
+        <button class="btn-submit metrics" id="btn-metrics" onclick="submitScore('metrics')">Submit →</button>
+      </div>
+      <div class="success metrics" id="success-metrics"><div class="tick">✅</div><p>Score submitted — distribution unlocked!</p></div>
+    </div>
+
+    <div class="chart-locked" id="locked-metrics">
+      <div class="lock-icon">🔒</div>
+      <div class="lock-title">Distribution is hidden</div>
+      <div class="lock-sub">Submit your Metrics score above<br>to unlock the full class distribution.</div>
+    </div>
+
+    <div id="results-metrics" style="display:none">
+      <div class="stats-grid metrics" id="stats-metrics">
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-count">0</div><div class="stat-lbl">Students</div></div>
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-mean">–</div><div class="stat-lbl">Average</div></div>
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-median">–</div><div class="stat-lbl">Median</div></div>
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-min">–</div><div class="stat-lbl">Lowest</div></div>
+        <div class="stat-box"><div class="stat-val metrics" id="metrics-max">–</div><div class="stat-lbl">Highest</div></div>
+      </div>
+      <div class="chart-wrap">
+        <p class="chart-title" id="title-metrics">Metrics Distribution</p>
+        <div class="bars" id="bars-metrics"></div>
+        <div class="x-axis" id="xaxis-metrics"></div>
+        <div class="empty-msg" id="empty-metrics">No scores yet.</div>
+      </div>
+    </div>
+  </div>
 
     <p class="footer">UPDATES IN REAL-TIME · FULLY ANONYMOUS · NO LOGIN REQUIRED</p>
   </div>
 </div>
 
-<!-- Firebase SDK (v9 compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-
 <script>
 /* ═══════════════════════════════════════════════
-   PASTE YOUR FIREBASE CONFIG HERE
+   🔧 PASTE YOUR FIREBASE CONFIG HERE
+   Get it from: Firebase Console → Project Settings → Your apps → Web
    ═══════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey:            "AIzaSyATBPca_RlhhuEljexzrWEaqvsgoc1dqd8",
@@ -352,27 +376,20 @@ const firebaseConfig = {
 };
 /* ═══════════════════════════════════════════════ */
 
-// ── Submission gate (localStorage) ────────────────────────────────────────
-const STORAGE_KEY = "classScoreSubmitted";
+const EXAMS = ['micro','macro','metrics'];
+const ACCENT = {
+  micro:   { fill: t => `hsl(${145+t*20},${60+t*20}%,${48-t*10}%)`, tip:'#12b76a' },
+  macro:   { fill: t => `hsl(${215+t*15},${70+t*20}%,${50-t*12}%)`, tip:'#2e7ef5' },
+  metrics: { fill: t => `hsl(${270+t*15},${60+t*20}%,${52-t*12}%)`, tip:'#9333ea' },
+};
+const NAMES = { micro:'Micro', macro:'Macro', metrics:'Metrics' };
 
-function hasSubmitted() {
-  return localStorage.getItem(STORAGE_KEY) === "true";
-}
+const state = {};
+EXAMS.forEach(e => state[e] = { scores:[], barsReady:false, submitted:false });
 
-function markSubmitted() {
-  localStorage.setItem(STORAGE_KEY, "true");
-}
-
-function showResults() {
-  document.getElementById("gateMsg").style.display = "none";
-  document.getElementById("resultsSection").style.display = "block";
-}
-
-// ── Init ──────────────────────────────────────────────────────────────────
+// ── Firebase ──────────────────────────────────────────────────────────────
 const isConfigured = !firebaseConfig.apiKey.startsWith("PASTE_");
-
-let scores = [];
-let db, scoresRef;
+let db;
 
 // If user already submitted before, restore the results view
 if (hasSubmitted()) {
@@ -384,167 +401,146 @@ if (hasSubmitted()) {
 if (isConfigured) {
   firebase.initializeApp(firebaseConfig);
   db = firebase.database();
-  scoresRef = db.ref("scores");
-
-  // Real-time listener
-  scoresRef.on("value", snap => {
-    const data = snap.val();
-    scores = data ? Object.values(data) : [];
-    renderAll();
+  EXAMS.forEach(exam => {
+    db.ref(`scores/${exam}`).on("value", snap => {
+      const data = snap.val();
+      state[exam].scores = data ? Object.values(data) : [];
+      // Only re-render chart if already submitted
+      if (state[exam].submitted) renderChart(exam);
+    });
   });
 } else {
   document.getElementById("setupBanner").style.display = "block";
-  renderAll();
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  EXAMS.forEach(e => {
+    document.getElementById(`panel-${e}`).classList.toggle('active', e===name);
+    document.querySelector(`.tab-btn.${e}`).classList.toggle('active', e===name);
+  });
+  if (!state[name].submitted) {
+    setTimeout(() => document.getElementById(`input-${name}`).focus(), 50);
+  }
 }
 
 // ── Submit ────────────────────────────────────────────────────────────────
-function submitScore() {
-  const input = document.getElementById("scoreInput");
-  const errMsg = document.getElementById("errMsg");
-  const val = parseInt(input.value, 10);
+function submitScore(exam) {
+  const input = document.getElementById(`input-${exam}`);
+  const errEl = document.getElementById(`err-${exam}`);
+  const val   = parseInt(input.value, 10);
 
   if (isNaN(val) || val < 0 || val > 100) {
-    errMsg.textContent = "Please enter a score between 0 and 100.";
-    input.classList.add("err");
-    return;
+    errEl.textContent = "Enter a score between 0 and 100.";
+    input.classList.add("err"); return;
   }
-  errMsg.textContent = "";
-  input.classList.remove("err");
+  errEl.textContent = ""; input.classList.remove("err");
 
   if (isConfigured) {
-    scoresRef.push(val);
+    db.ref(`scores/${exam}`).push(val);
   } else {
-    scores.push(val);
-    renderAll();
+    state[exam].scores.push(val);
   }
 
-  // Mark as submitted in localStorage
-  markSubmitted();
+  state[exam].submitted = true;
 
-  document.getElementById("inputCard").style.display = "none";
-  document.getElementById("successBanner").style.display = "block";
-  showResults();
+  // Hide input form
+  input.parentElement.style.display = 'none';
+  document.getElementById(`btn-${exam}`).style.display = 'none';
+  document.querySelector(`#body-${exam} label`).style.display = 'none';
+  document.getElementById(`success-${exam}`).style.display = 'block';
+
+  // Swap lock screen → chart
+  document.getElementById(`locked-${exam}`).style.display = 'none';
+  const resultsEl = document.getElementById(`results-${exam}`);
+  resultsEl.style.display = 'block';
+  resultsEl.classList.add('chart-revealed');
+
+  // Show stats grid
+  document.getElementById(`stats-${exam}`).style.display = 'grid';
+
+  // Render chart
+  renderChart(exam);
 }
 
-// Enter key shortcut
-document.getElementById("scoreInput").addEventListener("keydown", e => {
-  if (e.key === "Enter") submitScore();
+EXAMS.forEach(exam => {
+  document.getElementById(`input-${exam}`).addEventListener('keydown', e => {
+    if (e.key === 'Enter') submitScore(exam);
+  });
 });
 
-// ── Histogram data ────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────
 function buildBins(scores) {
-  return Array.from({ length: 11 }, (_, i) => {
-    const low = i * 10;
-    const high = i === 10 ? 100 : low + 9;
-    const label = i === 10 ? "100" : `${low}`;
-    const count = scores.filter(s => i === 10 ? s === 100 : s >= low && s <= high).length;
-    return { low, high, label, count };
+  return Array.from({length:11}, (_,i) => {
+    const low = i*10, high = i===10 ? 100 : low+9;
+    const count = scores.filter(s => i===10 ? s===100 : s>=low && s<=high).length;
+    return { label: String(low), count };
   });
 }
 
 function calcStats(arr) {
   if (!arr.length) return null;
-  const sorted = [...arr].sort((a, b) => a - b);
-  const m = Math.floor(sorted.length / 2);
-  const median = sorted.length % 2 !== 0
-    ? sorted[m]
-    : ((sorted[m - 1] + sorted[m]) / 2).toFixed(1);
+  const s = [...arr].sort((a,b)=>a-b), m = Math.floor(s.length/2);
   return {
-    count: arr.length,
-    mean: (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(1),
-    median,
-    min: sorted[0],
-    max: sorted[sorted.length - 1],
+    count:  s.length,
+    mean:   (s.reduce((a,b)=>a+b,0)/s.length).toFixed(1),
+    median: s.length%2 ? s[m] : ((s[m-1]+s[m])/2).toFixed(1),
+    min: s[0], max: s[s.length-1],
   };
 }
 
 // ── Render ────────────────────────────────────────────────────────────────
-let barsReady = false;
+function renderChart(exam) {
+  const scores   = state[exam].scores;
+  const bins     = buildBins(scores);
+  const stats    = calcStats(scores);
+  const maxCount = Math.max(...bins.map(b=>b.count), 1);
 
-function renderAll() {
-  // Only render results if user has submitted
-  if (!hasSubmitted()) return;
-
-  const bins = buildBins(scores);
-  const stats = calcStats(scores);
-  const maxCount = Math.max(...bins.map(b => b.count), 1);
-
-  // Stats strip
   if (stats) {
-    document.getElementById("statsGrid").style.display = "grid";
-    document.getElementById("sCount").textContent  = stats.count;
-    document.getElementById("sMean").textContent   = stats.mean;
-    document.getElementById("sMedian").textContent = stats.median;
-    document.getElementById("sMin").textContent    = stats.min;
-    document.getElementById("sMax").textContent    = stats.max;
+    document.getElementById(`${exam}-count`).textContent  = stats.count;
+    document.getElementById(`${exam}-mean`).textContent   = stats.mean;
+    document.getElementById(`${exam}-median`).textContent = stats.median;
+    document.getElementById(`${exam}-min`).textContent    = stats.min;
+    document.getElementById(`${exam}-max`).textContent    = stats.max;
   }
 
-  // Chart title
-  document.getElementById("chartTitle").textContent =
-    scores.length === 0
-      ? "Score Distribution · waiting for submissions"
-      : `Score Distribution · ${scores.length} student${scores.length !== 1 ? "s" : ""}`;
+  document.getElementById(`title-${exam}`).textContent =
+    `${NAMES[exam]} Distribution · ${scores.length} student${scores.length!==1?'s':''}`;
 
-  // Empty message
-  document.getElementById("emptyMsg").style.display = scores.length === 0 ? "block" : "none";
+  document.getElementById(`empty-${exam}`).style.display = scores.length===0 ? 'block' : 'none';
 
-  // Build bars on first call, update heights afterwards
-  const barsContainer = document.getElementById("barsContainer");
-  const xAxis = document.getElementById("xAxis");
+  const barsEl  = document.getElementById(`bars-${exam}`);
+  const xaxisEl = document.getElementById(`xaxis-${exam}`);
 
-  if (!barsReady) {
-    barsContainer.innerHTML = "";
-    xAxis.innerHTML = "";
+  if (!state[exam].barsReady) {
+    barsEl.innerHTML = ''; xaxisEl.innerHTML = '';
     bins.forEach((bin, i) => {
-      const col = document.createElement("div");
-      col.className = "bar-col";
-      col.id = `col-${i}`;
-
-      const tip = document.createElement("div");
-      tip.className = "bar-tip";
-      tip.id = `tip-${i}`;
-
-      const rect = document.createElement("div");
-      rect.className = "bar-rect";
-      rect.id = `bar-${i}`;
-      rect.style.height = "0px";
-      rect.style.transitionDelay = `${i * 0.04}s`;
-
-      col.appendChild(tip);
-      col.appendChild(rect);
-      barsContainer.appendChild(col);
-
-      const lbl = document.createElement("div");
-      lbl.className = "x-lbl";
-      lbl.textContent = bin.label;
-      xAxis.appendChild(lbl);
+      const col  = document.createElement('div'); col.className='bar-col';
+      const tip  = document.createElement('div'); tip.className='bar-tip'; tip.id=`${exam}-tip-${i}`;
+      tip.style.color = ACCENT[exam].tip;
+      const rect = document.createElement('div'); rect.className='bar-rect'; rect.id=`${exam}-bar-${i}`;
+      rect.style.height='0px'; rect.style.transitionDelay=`${i*0.04}s`;
+      col.appendChild(tip); col.appendChild(rect); barsEl.appendChild(col);
+      const lbl = document.createElement('div'); lbl.className='x-lbl'; lbl.textContent=bin.label;
+      xaxisEl.appendChild(lbl);
     });
-    barsReady = true;
-    requestAnimationFrame(() => updateBars(bins, maxCount));
+    state[exam].barsReady = true;
+    requestAnimationFrame(() => updateBars(exam, bins, maxCount));
   } else {
-    updateBars(bins, maxCount);
+    updateBars(exam, bins, maxCount);
   }
 }
 
-function barColor(count, maxCount) {
-  if (count === 0) return "#f0e8f0";
-  const t = count / maxCount;
-  const hue = 300 - t * 30;
-  const sat = 30 + t * 20;
-  const light = 80 - t * 20;
-  return `hsl(${hue}, ${sat}%, ${light}%)`;
-}
-
-function updateBars(bins, maxCount) {
-  const maxPx = 160;
+function updateBars(exam, bins, maxCount) {
+  const maxPx = 150;
   bins.forEach((bin, i) => {
-    const bar = document.getElementById(`bar-${i}`);
-    const tip = document.getElementById(`tip-${i}`);
+    const bar = document.getElementById(`${exam}-bar-${i}`);
+    const tip = document.getElementById(`${exam}-tip-${i}`);
     if (!bar) return;
-    const h = bin.count > 0 ? Math.max((bin.count / maxCount) * maxPx, 6) : 0;
+    const h = bin.count > 0 ? Math.max((bin.count/maxCount)*maxPx, 5) : 0;
     bar.style.height = `${h}px`;
-    bar.style.background = barColor(bin.count, maxCount);
-    tip.textContent = bin.count > 0 ? bin.count : "";
+    bar.style.background = bin.count===0 ? '#eef0f7' : ACCENT[exam].fill(bin.count/maxCount);
+    tip.textContent = bin.count > 0 ? bin.count : '';
   });
 }
 </script>
